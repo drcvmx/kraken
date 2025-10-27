@@ -1163,34 +1163,48 @@ ${template.css(w, h, pad)}
       `}</style>
 
       {/* Dialog sucursal */}
-      <Dialog open={!sucursalId}>
-        <DialogContent className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-950 via-black to-gray-900 text-white border-white/10 shadow-2xl w-full max-w-[95vw] sm:max-w-md">
+      <Dialog open={!sucursalId} onOpenChange={() => {}}>
+        <DialogContent
+          className="sm:max-w-md overflow-hidden rounded-2xl bg-gradient-to-br from-gray-950 via-black to-gray-900 text-white border-white/10 shadow-2xl"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+        >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 pointer-events-none" />
           <DialogHeader>
-            <DialogTitle className="text-white">
+            <DialogTitle className="text-white text-xl">
               Selecciona una sucursal
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <Label className="text-gray-100">Sucursal / Almacén</Label>
-            <Select value={sucursalId} onValueChange={setSucursalId}>
-              <SelectTrigger className="bg-white/5 border-white/10 text-white w-full rounded-xl hover:bg-white/10 transition-colors">
-                <SelectValue placeholder="Elige una sucursal" />
-              </SelectTrigger>
-              <SelectContent className="bg-black/80 backdrop-blur-xl border-white/10">
-                {SCS.map((s) => (
-                  <SelectItem
-                    className="text-white hover:bg-white/10"
-                    key={s.id}
-                    value={s.id}
-                  >
-                    {s.nombre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="space-y-4 relative z-10">
+            <div className="space-y-2">
+              <Label className="text-gray-100 font-medium">
+                Sucursal
+              </Label>
+              <Select value={sucursalId} onValueChange={setSucursalId}>
+                <SelectTrigger className="bg-white/5 border-white/10 text-white w-full rounded-xl hover:bg-white/10 transition-colors">
+                  <SelectValue placeholder="Elige una sucursal" />
+                </SelectTrigger>
+                <SelectContent className="bg-black/80 backdrop-blur-xl border-white/10">
+                  {SCS.map((s) => (
+                    <SelectItem
+                      className="text-white hover:bg-white/10"
+                      key={s.id}
+                      value={s.id}
+                    >
+                      {s.nombre}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button
-              className="w-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 hover:from-purple-500/40 hover:to-blue-500/40 shadow-lg shadow-purple-500/20 rounded-xl"
+              onClick={() => {
+                if (sucursalId) {
+                  // El modal se cerrará automáticamente porque sucursalId ya no será null
+                  console.log("Sucursal seleccionada:", sucursalId);
+                }
+              }}
+              className="w-full bg-gradient-to-br from-purple-500/30 to-blue-500/30 hover:from-purple-500/40 hover:to-blue-500/40 shadow-lg shadow-purple-500/20 rounded-xl transition-all duration-200"
               disabled={!sucursalId}
             >
               Continuar
@@ -1556,7 +1570,6 @@ ${template.css(w, h, pad)}
                     <Printer className="w-4 h-4 mr-2" />
                     Imprimir ({totalLabels})
                   </Button>
-
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-4">
@@ -1589,11 +1602,10 @@ ${template.css(w, h, pad)}
                         : "Importar Excel"}
                     </span>
                   </Button>
-
                 </div>
-                
+
                 <div className="w-full">
-                   <Button
+                  <Button
                     type="button"
                     variant="outline"
                     className="w-full justify-center h-10 sm:h-11 text-gray-300 bg-transparent hover:bg-gray-700"
