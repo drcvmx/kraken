@@ -128,8 +128,8 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
         </div>
       </div>
 
-      {/* Mobile/Tablet Layout */}
-      <div className="lg:hidden space-y-4">
+      {/* Mobile Layout (< 640px) - QR abajo */}
+      <div className="sm:hidden space-y-4">
         {/* Info del folio */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -151,6 +151,32 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
 
         {/* QR Code centrado */}
         <div className="flex justify-center pt-2">
+          <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
+        </div>
+      </div>
+
+      {/* Tablet Layout (640px - 1024px) - QR a la derecha */}
+      <div className="hidden sm:flex lg:hidden items-start justify-between gap-4">
+        <div className="flex-1 min-w-0 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FileText className="w-5 h-5 text-white/60" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-lg font-bold text-white/90">
+                {folio.FOLIO_FORMATEADO}
+              </h4>
+              <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
+                <Calendar className="w-4 h-4" />
+                <span>{formatDate(folio.FECHA_ENTREGA)}</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-sm text-white/70 pl-13">{folio.PROVEEDOR}</p>
+        </div>
+
+        {/* QR a la derecha */}
+        <div className="flex-shrink-0">
           <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
         </div>
       </div>
