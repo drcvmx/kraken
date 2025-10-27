@@ -1177,9 +1177,7 @@ ${template.css(w, h, pad)}
           </DialogHeader>
           <div className="space-y-4 relative z-10">
             <div className="space-y-2">
-              <Label className="text-gray-100 font-medium">
-                Sucursal
-              </Label>
+              <Label className="text-gray-100 font-medium">Sucursal</Label>
               <Select value={sucursalId} onValueChange={setSucursalId}>
                 <SelectTrigger className="bg-white/5 border-white/10 text-white w-full rounded-xl hover:bg-white/10 transition-colors">
                   <SelectValue placeholder="Elige una sucursal" />
@@ -1225,7 +1223,7 @@ ${template.css(w, h, pad)}
           }
         }}
       >
-        <DialogContent className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-950 via-black to-gray-900 text-white border-white/10 shadow-2xl w-full max-w-[95vw] sm:max-w-lg">
+        <DialogContent className="sm:max-w-lg overflow-hidden rounded-2xl bg-gradient-to-br from-gray-950 via-black to-gray-900 text-white border-white/10 shadow-2xl">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10 pointer-events-none" />
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
