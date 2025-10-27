@@ -42,7 +42,7 @@ function QRCodeComponent({ value }: { value: string }) {
         await QRCode.toCanvas(canvasRef.current, value, {
           errorCorrectionLevel: "M",
           margin: 1,
-          width: 64,
+          width: 96, // Aumentado de 64 a 96
           color: {
             dark: "#ffffff",
             light: "#00000000", // Transparente
@@ -60,9 +60,9 @@ function QRCodeComponent({ value }: { value: string }) {
   return (
     <canvas
       ref={canvasRef}
-      className="rounded border border-white/10 bg-white/5"
-      width={64}
-      height={64}
+      className="rounded-lg border border-white/10 bg-white/5 shadow-lg"
+      width={96}
+      height={96}
     />
   );
 }
@@ -84,17 +84,18 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="group bg-black/40 hover:bg-black/60 border-b border-white/5 last:border-b-0 p-6 cursor-pointer transition-all duration-200"
+      className="group bg-black/40 hover:bg-black/60 border-b border-white/5 last:border-b-0 p-4 sm:p-6 cursor-pointer transition-all duration-200"
     >
-      <div className="flex items-center gap-6">
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex items-center gap-6">
         {/* Folio */}
-        <div className="flex-shrink-0 w-48">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/5 group-hover:bg-white/10 rounded-lg flex items-center justify-center transition-all duration-200">
-              <FileText className="w-5 h-5 text-white/60 group-hover:text-white/90" />
+        <div className="flex-shrink-0 w-56">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/5 group-hover:bg-white/10 rounded-lg flex items-center justify-center transition-all duration-200">
+              <FileText className="w-6 h-6 text-white/60 group-hover:text-white/90" />
             </div>
             <div>
-              <h4 className="text-base font-bold text-white/90 group-hover:text-white transition-colors">
+              <h4 className="text-xl font-bold text-white/90 group-hover:text-white transition-colors">
                 {folio.FOLIO_FORMATEADO}
               </h4>
             </div>
@@ -103,13 +104,13 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
 
         {/* Proveedor */}
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-white/80 truncate">{folio.PROVEEDOR}</p>
+          <p className="text-base text-white/80 truncate">{folio.PROVEEDOR}</p>
         </div>
 
         {/* Fecha Entrega */}
-        <div className="flex-shrink-0 w-40">
+        <div className="flex-shrink-0 w-44">
           <div className="flex items-center gap-2 text-sm">
-            <Calendar className="w-4 h-4 text-white/40" />
+            <Calendar className="w-5 h-5 text-white/40" />
             <span className="text-white/90">
               {formatDate(folio.FECHA_ENTREGA)}
             </span>
@@ -117,13 +118,37 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
         </div>
 
         {/* Código QR */}
-        <div className="flex-shrink-0 w-32 flex justify-center">
+        <div className="flex-shrink-0 w-28 flex justify-center">
           <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
         </div>
 
         {/* Chevron */}
-        <div className="flex-shrink-0 w-20 flex justify-end">
-          <ChevronRight className="w-5 h-5 text-white/30 group-hover:text-white/70 transition-colors" />
+        <div className="flex-shrink-0 w-12 flex justify-end">
+          <ChevronRight className="w-6 h-6 text-white/30 group-hover:text-white/70 transition-colors" />
+        </div>
+      </div>
+
+      {/* Mobile/Tablet Layout */}
+      <div className="lg:hidden space-y-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-white/60" />
+              </div>
+              <h4 className="text-lg font-bold text-white/90">
+                {folio.FOLIO_FORMATEADO}
+              </h4>
+            </div>
+            <p className="text-sm text-white/70 mb-2">{folio.PROVEEDOR}</p>
+            <div className="flex items-center gap-2 text-xs text-white/60">
+              <Calendar className="w-4 h-4" />
+              <span>{formatDate(folio.FECHA_ENTREGA)}</span>
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
+          </div>
         </div>
       </div>
     </div>
@@ -132,13 +157,13 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
 
 function TableHeaders() {
   return (
-    <div className="px-6 py-4 border-b border-white/10 bg-white/[0.02]">
+    <div className="hidden lg:block px-6 py-4 border-b border-white/10 bg-white/[0.02]">
       <div className="flex items-center gap-6 text-xs font-medium text-white/50 uppercase tracking-wider">
-        <div className="flex-shrink-0 w-48">Folio</div>
+        <div className="flex-shrink-0 w-56">Folio</div>
         <div className="flex-1 min-w-0">Proveedor</div>
-        <div className="flex-shrink-0 w-40">Fecha Entrega</div>
-        <div className="flex-shrink-0 w-32 text-center">Código QR</div>
-        <div className="flex-shrink-0 w-20"></div>
+        <div className="flex-shrink-0 w-44">Fecha Entrega</div>
+        <div className="flex-shrink-0 w-28 text-center">Código QR</div>
+        <div className="flex-shrink-0 w-12"></div>
       </div>
     </div>
   );
@@ -273,23 +298,6 @@ export default function FoliosBoardVertical() {
               <p className="text-sm text-white/40 mt-1">
                 Órdenes de compra pendientes
               </p>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={handleRefresh}
-                disabled={loading}
-                className="px-4 py-2 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white/60 hover:text-white/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Actualizar
-              </button>
-              <button
-                onClick={handleExport}
-                disabled={folios.length === 0}
-                className="px-4 py-2 text-sm bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-white/60 hover:text-white/80 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Download className="w-4 h-4" />
-                Exportar
-              </button>
             </div>
           </div>
         </div>
