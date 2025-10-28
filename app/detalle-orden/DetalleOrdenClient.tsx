@@ -59,12 +59,9 @@ export default function DetalleOrden() {
   const sistema = searchParams.get("sistema");
   const orden = searchParams.get("orden");
 
-  console.log("🔍 Parámetros de URL:", { doctoId, sistema, orden });
-
   const ordenData = useMemo(() => {
     try {
       const parsed = orden ? JSON.parse(orden) : null;
-      console.log("📦 Datos de orden parseados:", parsed);
       return parsed;
     } catch (e) {
       console.error("❌ Error al parsear orden:", e);
@@ -193,18 +190,14 @@ export default function DetalleOrden() {
   };
 
   const fetchCaratula = useCallback(async () => {
-    console.log("📞 Llamando a /caratula con:", { doctoId, sistema });
     const url = `${baseURL}/caratula?doctoId=${encodeURIComponent(
       String(doctoId)
     )}&sistema=${encodeURIComponent(String(sistema))}`;
-    console.log("🔗 URL completa:", url);
     const resp = await fetch(url);
     const json = await resp.json();
-    console.log("📦 Respuesta de /caratula:", json);
     if (!resp.ok || !json?.ok)
       throw new Error(json?.error || "Error al obtener carátula");
     const row = (json.caratula || [])[0] || {};
-    console.log("📋 Fila de carátula:", row);
     setCaratula({
       folio: row.R_FOLIO ?? ordenData?.id ?? "",
       fecha: row.R_FECHA ?? ordenData?.fecha ?? "",
@@ -312,7 +305,6 @@ export default function DetalleOrden() {
 
   const processScan = (raw: string) => {
     if (scanningRef.current) {
-      console.log("[v0] Scan blocked - already processing");
       return;
     }
 
@@ -330,7 +322,6 @@ export default function DetalleOrden() {
       return;
     }
 
-    console.log("[v0] Processing scan:", code);
     scanningRef.current = true;
 
     const idx = detalles.findIndex(
@@ -365,18 +356,10 @@ export default function DetalleOrden() {
             );
 
             if (existingIndex >= 0) {
-              console.log(
-                "[v0] Incrementing existing article:",
-                updated[cajaActivaId][existingIndex].codigo
-              );
               updated[cajaActivaId] = updated[cajaActivaId].map((a, i) =>
                 i === existingIndex ? { ...a, cantidad: a.cantidad + 1 } : a
               );
             } else {
-              console.log(
-                "[v0] Adding new article to box:",
-                item.codigo || item.codbar
-              );
               updated[cajaActivaId] = [
                 ...updated[cajaActivaId],
                 {
@@ -403,7 +386,6 @@ export default function DetalleOrden() {
 
     setTimeout(() => {
       scanningRef.current = false;
-      console.log("[v0] Scan lock released");
     }, 100);
   };
 
@@ -451,16 +433,9 @@ export default function DetalleOrden() {
     setIsPrinting(true);
 
     try {
-      // 🆕 PASO 1: Ejecutar procedimiento REMISIONAR_PEDIDO_MEJORADO
-      console.log(
-        "🚀 Ejecutando procedimiento almacenado para folio:",
-        caratula.folio
-      );
-
       const folioDeconstruido = deconstructFolio(caratula.folio);
-      console.log("📦 Folio deconstruido:", folioDeconstruido);
 
-      // 🆕 Detectar tipo de documento por la primera letra del folio
+      // Detectar tipo de documento por la primera letra del folio
       const primeraLetra = caratula.folio.charAt(0).toUpperCase();
       let tipoDocto = "P"; // Por defecto Pedido
 
@@ -471,10 +446,6 @@ export default function DetalleOrden() {
       } else if (primeraLetra === "R") {
         tipoDocto = "R"; // Remisión
       }
-
-      console.log(
-        `📋 Tipo de documento detectado: ${tipoDocto} (primera letra: ${primeraLetra})`
-      );
 
       const remisionarResp = await fetch(`${baseURL}/remisionar-pedido`, {
         method: "POST",
@@ -495,7 +466,6 @@ export default function DetalleOrden() {
         );
       }
 
-      console.log("✅ Procedimiento almacenado ejecutado correctamente");
       showToast("Pedido remisionado correctamente", "success");
 
       // Guardar el folio y mostrar modal de remisión completa
@@ -513,7 +483,6 @@ export default function DetalleOrden() {
   const imprimirEtiquetas = async () => {
     setIsPrinting(true);
     try {
-      // PASO 2: Obtener datos del folio para imprimir etiquetas (usar folio deconstruido)
       const folioResp = await fetch(
         `/api/buscar_folio?folio=${encodeURIComponent(folioRemisionado)}`
       );
@@ -530,7 +499,6 @@ export default function DetalleOrden() {
         : folioJson.data;
       const tipoDetectado = folioJson.tipo || "factura";
 
-      // PASO 3: Imprimir etiquetas
       await printLabels({
         folio: caratula?.folio || folioRemisionado,
         folioData,
