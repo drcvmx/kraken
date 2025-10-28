@@ -91,15 +91,8 @@ export default function CatalogsSection() {
               Módulos Principales
             </h3>
             <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden">
-               <ModuleCard
-                title="Almacenes"
-                description="Registra la entrada de mercancía, valida contra órdenes de compra y asegura cantidades correctas."
-                icon={Inbox}
-                version="v2.1.0"
-                onClick={handleAlmacenesClick}
-              /> 
                  <ModuleCard
-                title="AlmacenesOficial"
+                title="Almacenes oficial"
                 description="Registra la entrada de mercancía, valida contra órdenes de compra y asegura cantidades correctas."
                 icon={Inbox}
                 version="v2.1.0"

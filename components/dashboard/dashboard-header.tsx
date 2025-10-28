@@ -1,12 +1,14 @@
 "use client"
 
-import { Sun, MessageCircle, Bell, Plus } from "lucide-react"
+import { Sun, MessageCircle, Bell, Plus, User } from "lucide-react"
 
 interface DashboardHeaderProps {
   activeSection: string
+  userName?: string
+  userEmail?: string
 }
 
-export default function DashboardHeader({ activeSection }: DashboardHeaderProps) {
+export default function DashboardHeader({ activeSection, userName, userEmail }: DashboardHeaderProps) {
   return (
     <header className="bg-black/40 backdrop-blur-xl border-b border-white/10 px-6 py-4 relative">
       {/* Subtle gradient overlay */}
@@ -49,7 +51,16 @@ export default function DashboardHeader({ activeSection }: DashboardHeaderProps)
 
           <div className="h-6 w-px bg-white/10" />
 
-          <div className="text-sm text-gray-300/80 font-medium">Bienvenido al abismo</div>
+          {/* User Info */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-900 to-purple-900 text-white border border-blue-800/40">
+              <User className="h-4 w-4" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-white/95">{userName || "Usuario"}</span>
+              <span className="text-xs text-gray-400/80">{userEmail || "correo@ejemplo.com"}</span>
+            </div>
+          </div>
         </div>
       </div>
     </header>

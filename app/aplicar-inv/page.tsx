@@ -65,10 +65,10 @@ export default function AplicarInvPage() {
       if (highlight) {
         console.log("🎯 Folio a destacar:", highlight);
         setHighlightFolio(highlight);
-        
+
         // Cambiar filtro a "no-aplicados" para asegurar que se vea
         setFilter("no-aplicados");
-        
+
         // Remover el highlight después de 10 segundos
         setTimeout(() => {
           console.log("⏰ Removiendo highlight");
@@ -83,24 +83,30 @@ export default function AplicarInvPage() {
     if (highlightFolio && !loading && doctos.length > 0) {
       console.log("📊 Datos cargados, buscando folio:", highlightFolio);
       console.log("📋 Total documentos:", doctos.length);
-      
+
       // Esperar a que el DOM se actualice completamente
       setTimeout(() => {
         const row = document.querySelector(`[data-folio="${highlightFolio}"]`);
         console.log("🔍 Elemento encontrado:", row ? "SÍ" : "NO");
-        
+
         if (row) {
           row.scrollIntoView({ behavior: "smooth", block: "center" });
           console.log("✅ Scroll ejecutado al folio:", highlightFolio);
-          
+
           // Segundo intento después de 1 segundo por si acaso
           setTimeout(() => {
             row.scrollIntoView({ behavior: "smooth", block: "center" });
             console.log("✅ Segundo scroll ejecutado");
           }, 1000);
         } else {
-          console.warn("⚠️ No se encontró el elemento con folio:", highlightFolio);
-          console.log("📝 Folios disponibles:", doctos.map(d => d.FOLIO));
+          console.warn(
+            "⚠️ No se encontró el elemento con folio:",
+            highlightFolio
+          );
+          console.log(
+            "📝 Folios disponibles:",
+            doctos.map((d) => d.FOLIO)
+          );
         }
       }, 500);
     }
@@ -322,33 +328,33 @@ export default function AplicarInvPage() {
         ) : (
           <div className="space-y-6">
             {/* Stats Dashboard */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
               <button
                 onClick={() => setFilter("todos")}
-                className={`rounded-2xl border p-6 backdrop-blur-xl transition-all text-left ${
+                className={`rounded-2xl border p-8 sm:p-10 backdrop-blur-xl transition-all text-left ${
                   filter === "todos"
                     ? "border-purple-500/30 bg-gradient-to-br from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 scale-105 shadow-lg"
                     : "border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] hover:bg-white/10 hover:scale-105"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-light text-sm tracking-wide text-white/60">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-light text-sm sm:text-base tracking-wide text-white/60 mb-3">
                       Total Documentos
                     </div>
-                    <div className="mt-2 font-light text-3xl tracking-wide text-white/90">
+                    <div className="font-light text-3xl sm:text-4xl lg:text-5xl tracking-wide text-white/90">
                       {stats.total}
                     </div>
                   </div>
                   <div
-                    className={`rounded-xl p-3 ${
+                    className={`rounded-xl p-4 sm:p-5 flex-shrink-0 ${
                       filter === "todos"
                         ? "bg-gradient-to-br from-purple-500/30 to-blue-500/30"
                         : "border border-white/10 bg-white/5"
                     }`}
                   >
                     <FileText
-                      className={`h-6 w-6 ${
+                      className={`h-8 w-8 sm:h-10 sm:w-10 ${
                         filter === "todos" ? "text-white" : "text-white/60"
                       }`}
                     />
@@ -358,58 +364,58 @@ export default function AplicarInvPage() {
 
               <button
                 onClick={() => setFilter("aplicados")}
-                className={`rounded-2xl border p-6 backdrop-blur-xl transition-all text-left ${
+                className={`rounded-2xl border p-8 sm:p-10 backdrop-blur-xl transition-all text-left ${
                   filter === "aplicados"
                     ? "border-green-500/40 bg-gradient-to-br from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 scale-105 shadow-lg"
                     : "border-green-500/20 bg-gradient-to-br from-green-500/10 to-green-500/5 hover:bg-green-500/20 hover:scale-105"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-light text-sm tracking-wide text-green-400/80">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-light text-sm sm:text-base tracking-wide text-green-400/80 mb-3">
                       Aplicados
                     </div>
-                    <div className="mt-2 font-light text-3xl tracking-wide text-green-400">
+                    <div className="font-light text-3xl sm:text-4xl lg:text-5xl tracking-wide text-green-400">
                       {stats.aplicados}
                     </div>
                   </div>
                   <div
-                    className={`rounded-xl p-3 ${
+                    className={`rounded-xl p-4 sm:p-5 flex-shrink-0 ${
                       filter === "aplicados"
                         ? "bg-gradient-to-br from-green-500/30 to-emerald-500/30"
                         : "border border-green-500/20 bg-green-500/10"
                     }`}
                   >
-                    <CheckCircle2 className="h-6 w-6 text-green-400" />
+                    <CheckCircle2 className="h-8 w-8 sm:h-10 sm:w-10 text-green-400" />
                   </div>
                 </div>
               </button>
 
               <button
                 onClick={() => setFilter("no-aplicados")}
-                className={`rounded-2xl border p-6 backdrop-blur-xl transition-all text-left ${
+                className={`rounded-2xl border p-8 sm:p-10 backdrop-blur-xl transition-all text-left ${
                   filter === "no-aplicados"
                     ? "border-orange-500/40 bg-gradient-to-br from-orange-500/20 to-red-500/20 hover:from-orange-500/30 hover:to-red-500/30 scale-105 shadow-lg"
                     : "border-orange-500/20 bg-gradient-to-br from-orange-500/10 to-orange-500/5 hover:bg-orange-500/20 hover:scale-105"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-light text-sm tracking-wide text-orange-400/80">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-light text-sm sm:text-base tracking-wide text-orange-400/80 mb-3">
                       No Aplicados
                     </div>
-                    <div className="mt-2 font-light text-3xl tracking-wide text-orange-400">
+                    <div className="font-light text-3xl sm:text-4xl lg:text-5xl tracking-wide text-orange-400">
                       {stats.noAplicados}
                     </div>
                   </div>
                   <div
-                    className={`rounded-xl p-3 ${
+                    className={`rounded-xl p-4 sm:p-5 flex-shrink-0 ${
                       filter === "no-aplicados"
                         ? "bg-gradient-to-br from-orange-500/30 to-red-500/30"
                         : "border border-orange-500/20 bg-orange-500/10"
                     }`}
                   >
-                    <Clock className="h-6 w-6 text-orange-400" />
+                    <Clock className="h-8 w-8 sm:h-10 sm:w-10 text-orange-400" />
                   </div>
                 </div>
               </button>
@@ -691,8 +697,12 @@ export default function AplicarInvPage() {
                                       <div className="absolute inset-0 -m-2 rounded-lg border-4 border-teal-400 animate-ping opacity-75 pointer-events-none" />
                                       {/* Flecha indicadora */}
                                       <div className="absolute -left-12 top-1/2 -translate-y-1/2 flex items-center gap-2 animate-pulse">
-                                        <span className="text-teal-400 text-2xl">👉</span>
-                                        <span className="text-teal-400 font-bold text-xs whitespace-nowrap">¡AQUÍ!</span>
+                                        <span className="text-teal-400 text-2xl">
+                                          👉
+                                        </span>
+                                        <span className="text-teal-400 font-bold text-xs whitespace-nowrap">
+                                          ¡AQUÍ!
+                                        </span>
                                       </div>
                                     </>
                                   )}

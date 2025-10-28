@@ -141,14 +141,14 @@ export default function Sidebar({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={`relative transition-all duration-300 ease-out flex flex-col h-screen bg-[#0a0a0a] border-r border-white/5 ${
-        isExpanded ? "w-64" : "w-16"
+        isExpanded ? "w-64" : "w-14 sm:w-16"
       }`}
     >
       {/* Logo / Header */}
-      <div className="p-4 border-b border-white/5 flex items-center justify-between min-h-[72px]">
-        <div className="flex items-center space-x-3 overflow-hidden">
-          <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-            <div className="w-6 h-6 text-purple-500">
+      <div className="p-2 sm:p-4 border-b border-white/5 flex items-center justify-between min-h-[60px] sm:min-h-[72px]">
+        <div className="flex items-center space-x-2 sm:space-x-3 overflow-hidden">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500">
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L15.5 8.5L22 9.5L17 14.5L18.5 21L12 17.5L5.5 21L7 14.5L2 9.5L8.5 8.5L12 2Z" />
               </svg>
@@ -179,7 +179,7 @@ export default function Sidebar({
       )}
 
       {/* Menu Items */}
-      <nav className="flex-1 p-2 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+      <nav className="flex-1 p-1 sm:p-2 space-y-0.5 sm:space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
         {filteredMenuItems.map((item) => {
           const Icon = item.icon;
           const hasChildren = item.children && item.children.length > 0;
@@ -190,15 +190,15 @@ export default function Sidebar({
             <div key={item.name}>
               <button
                 onClick={() => handleMenuClick(item.name, !!hasChildren)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 group ${
+                className={`w-full flex items-center justify-between px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg transition-all duration-200 group ${
                   isActive
                     ? "bg-purple-500/10 text-purple-400"
                     : "text-gray-400 hover:text-white hover:bg-white/5"
                 }`}
                 title={!isExpanded ? item.name : undefined}
               >
-                <div className="flex items-center space-x-3 overflow-hidden">
-                  <Icon className="w-5 h-5 flex-shrink-0" />
+                <div className="flex items-center space-x-2 sm:space-x-3 overflow-hidden">
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
                   {isExpanded && (
                     <span className="text-sm font-normal whitespace-nowrap">
                       {item.name}
@@ -246,41 +246,41 @@ export default function Sidebar({
       </nav>
 
       {/* Footer Actions */}
-      <div className="p-3 border-t border-white/5">
+      <div className="p-2 sm:p-3 border-t border-white/5">
         {isExpanded ? (
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2">
             <button
               onClick={() => onSectionChange("PERFIL")}
-              className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-200 flex items-center justify-center group relative"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-200 flex items-center justify-center group relative"
               title="Cuenta General"
             >
-              <UserCircle className="w-5 h-5" />
+              <UserCircle className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             <button
               onClick={() => onSectionChange("CONFIGURACION")}
-              className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-200 flex items-center justify-center group relative"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-200 flex items-center justify-center group relative"
               title="Configuración"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             <button
               onClick={onLogout}
-              className="w-10 h-10 rounded-lg bg-white/5 hover:bg-red-950/20 text-gray-400 hover:text-red-400 transition-all duration-200 flex items-center justify-center group relative"
+              className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/5 hover:bg-red-950/20 text-gray-400 hover:text-red-400 transition-all duration-200 flex items-center justify-center group relative"
               title="Cerrar Sesión"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         ) : (
           <div className="relative">
             <button
               onClick={() => setShowCollapsedMenu(!showCollapsedMenu)}
-              className="w-full p-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-200 flex items-center justify-center"
+              className="w-full p-2 sm:p-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-200 flex items-center justify-center"
               title="Opciones"
             >
-              <MoreVertical className="w-5 h-5" />
+              <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
 
             {showCollapsedMenu && (

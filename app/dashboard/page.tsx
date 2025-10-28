@@ -4,8 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react"
 import { Loader2 } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 
-import Sidebar from "@/components/dashboard/sidebar"
-import DashboardHeader from "@/components/dashboard/dashboard-header"
+import DashboardLayout from "@/components/layouts/dashboard-layout"
 import PersonalizeSection from "@/components/dashboard/personalize-section"
 import UsersSection from "@/components/dashboard/users-section"
 import ApplicationsSection from "@/components/dashboard/applications-section"
@@ -228,21 +227,10 @@ const renderContent = useMemo(() => {
   }
 
   return (
-    <div className="h-dvh w-screen bg-black flex overflow-hidden">
-      <Sidebar
-        activeSection={activeSection}
-        onSectionChange={handleSectionChange}
-        onLogout={handleLogout}
-      />
-
-      <div className="flex-1 flex min-h-0 flex-col">
-        <div className="shrink-0">
-          <DashboardHeader activeSection={activeSection} />
-        </div>
-        <main className="flex-1 overflow-y-auto p-6">
-          {renderContent}
-        </main>
+    <DashboardLayout activeSection={activeSection} showHeader={true}>
+      <div className="p-6">
+        {renderContent}
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { useCompany } from "@/lib/company-context";
 import { fetchJsonWithRetry } from "@/lib/fetch-with-retry";
+import { QRCodeSVG } from "qrcode.react";
+import Barcode from "react-barcode";
 
 type Folio = {
   FOLIO_FORMATEADO: string;
@@ -30,44 +32,59 @@ type Estadisticas = {
 };
 
 function QRCodeComponent({ value }: { value: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const QRCode = (await import("qrcode")).default;
-        if (!mounted || !canvasRef.current) return;
-
-        await QRCode.toCanvas(canvasRef.current, value, {
-          errorCorrectionLevel: "M",
-          margin: 1,
-          width: 96, // Aumentado de 64 a 96
-          color: {
-            dark: "#ffffff",
-            light: "#00000000", // Transparente
-          },
-        });
-      } catch (err) {
-        console.error("Error generating QR:", err);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [value]);
-
   return (
-    <canvas
-      ref={canvasRef}
-      className="rounded-lg border border-white/10 bg-white/5 shadow-lg"
-      width={96}
-      height={96}
-    />
+    <div className="rounded-lg border border-gray-300 bg-white shadow-lg p-3">
+      <QRCodeSVG
+        value={value}
+        size={150}
+        level="M"
+        fgColor="#000000"
+        bgColor="#FFFFFF"
+      />
+    </div>
   );
 }
 
-function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
+function BarcodeComponent({ value }: { value: string }) {
+  return (
+    <div className="rounded-lg border border-gray-300 bg-white shadow-lg p-3">
+      <Barcode
+        value={value}
+        format="CODE128"
+        width={2}
+        height={80}
+        displayValue={true}
+        background="#FFFFFF"
+        lineColor="#000000"
+        margin={0}
+        fontSize={14}
+      />
+    </div>
+  );
+}
+
+function CodeDisplay({
+  value,
+  type,
+}: {
+  value: string;
+  type: "qr" | "barcode";
+}) {
+  if (type === "barcode") {
+    return <BarcodeComponent value={value} />;
+  }
+  return <QRCodeComponent value={value} />;
+}
+
+function FolioRow({
+  folio,
+  onClick,
+  codeType,
+}: {
+  folio: Folio;
+  onClick?: () => void;
+  codeType: "qr" | "barcode";
+}) {
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
@@ -84,18 +101,18 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="group bg-black/40 hover:bg-black/60 border-b border-white/5 last:border-b-0 p-4 sm:p-6 cursor-pointer transition-all duration-200"
+      className="group bg-black/40 hover:bg-black/60 border-b border-white/5 last:border-b-0 p-6 sm:p-8 cursor-pointer transition-all duration-200"
     >
       {/* Desktop Layout */}
-      <div className="hidden lg:flex items-center gap-6">
+      <div className="hidden lg:flex items-center gap-8">
         {/* Folio */}
-        <div className="flex-shrink-0 w-56">
+        <div className="flex-shrink-0 w-64">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-white/5 group-hover:bg-white/10 rounded-lg flex items-center justify-center transition-all duration-200">
-              <FileText className="w-6 h-6 text-white/60 group-hover:text-white/90" />
+            <div className="w-14 h-14 bg-white/5 group-hover:bg-white/10 rounded-xl flex items-center justify-center transition-all duration-200">
+              <FileText className="w-7 h-7 text-white/60 group-hover:text-white/90" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-white/90 group-hover:text-white transition-colors">
+              <h4 className="text-2xl font-bold text-white/90 group-hover:text-white transition-colors">
                 {folio.FOLIO_FORMATEADO}
               </h4>
             </div>
@@ -104,94 +121,102 @@ function FolioRow({ folio, onClick }: { folio: Folio; onClick?: () => void }) {
 
         {/* Proveedor */}
         <div className="flex-1 min-w-0">
-          <p className="text-base text-white/80 truncate">{folio.PROVEEDOR}</p>
+          <p className="text-lg font-medium text-white/80 truncate">
+            {folio.PROVEEDOR}
+          </p>
         </div>
 
         {/* Fecha Entrega */}
-        <div className="flex-shrink-0 w-44">
-          <div className="flex items-center gap-2 text-sm">
-            <Calendar className="w-5 h-5 text-white/40" />
-            <span className="text-white/90">
+        <div className="flex-shrink-0 w-48">
+          <div className="flex items-center gap-3 text-base">
+            <Calendar className="w-6 h-6 text-white/40" />
+            <span className="text-white/90 font-medium">
               {formatDate(folio.FECHA_ENTREGA)}
             </span>
           </div>
         </div>
 
-        {/* Código QR */}
-        <div className="flex-shrink-0 w-28 flex justify-center">
-          <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
+        {/* Código QR o Barras */}
+        <div className="flex-shrink-0 flex justify-center">
+          <CodeDisplay value={folio.FOLIO_FORMATEADO} type={codeType} />
         </div>
 
         {/* Chevron */}
         <div className="flex-shrink-0 w-12 flex justify-end">
-          <ChevronRight className="w-6 h-6 text-white/30 group-hover:text-white/70 transition-colors" />
+          <ChevronRight className="w-7 h-7 text-white/30 group-hover:text-white/70 transition-colors" />
         </div>
       </div>
 
-      {/* Mobile Layout (< 640px) - QR abajo */}
-      <div className="sm:hidden space-y-4">
+      {/* Mobile Layout (< 640px) - Código abajo */}
+      <div className="sm:hidden space-y-5">
         {/* Info del folio */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
-            <FileText className="w-5 h-5 text-white/60" />
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+            <FileText className="w-6 h-6 text-white/60" />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="text-lg font-bold text-white/90">
+            <h4 className="text-xl font-bold text-white/90">
               {folio.FOLIO_FORMATEADO}
             </h4>
-            <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
-              <Calendar className="w-3 h-3" />
+            <div className="flex items-center gap-2 text-sm text-white/60 mt-1">
+              <Calendar className="w-4 h-4" />
               <span>{formatDate(folio.FECHA_ENTREGA)}</span>
             </div>
           </div>
         </div>
 
         {/* Proveedor */}
-        <p className="text-sm text-white/70 pl-13">{folio.PROVEEDOR}</p>
+        <p className="text-base font-medium text-white/70 pl-16">
+          {folio.PROVEEDOR}
+        </p>
 
-        {/* QR Code centrado */}
-        <div className="flex justify-center pt-2">
-          <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
+        {/* Código centrado */}
+        <div className="flex justify-center pt-3">
+          <CodeDisplay value={folio.FOLIO_FORMATEADO} type={codeType} />
         </div>
       </div>
 
-      {/* Tablet Layout (640px - 1024px) - QR a la derecha */}
-      <div className="hidden sm:flex lg:hidden items-start justify-between gap-4">
-        <div className="flex-1 min-w-0 space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FileText className="w-5 h-5 text-white/60" />
+      {/* Tablet Layout (640px - 1024px) - Código a la derecha */}
+      <div className="hidden sm:flex lg:hidden items-start justify-between gap-6">
+        <div className="flex-1 min-w-0 space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FileText className="w-6 h-6 text-white/60" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-lg font-bold text-white/90">
+              <h4 className="text-xl font-bold text-white/90">
                 {folio.FOLIO_FORMATEADO}
               </h4>
-              <div className="flex items-center gap-2 text-xs text-white/60 mt-1">
-                <Calendar className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-sm text-white/60 mt-1">
+                <Calendar className="w-5 h-5" />
                 <span>{formatDate(folio.FECHA_ENTREGA)}</span>
               </div>
             </div>
           </div>
-          <p className="text-sm text-white/70 pl-13">{folio.PROVEEDOR}</p>
+          <p className="text-base font-medium text-white/70 pl-16">
+            {folio.PROVEEDOR}
+          </p>
         </div>
 
-        {/* QR a la derecha */}
+        {/* Código a la derecha */}
         <div className="flex-shrink-0">
-          <QRCodeComponent value={folio.FOLIO_FORMATEADO} />
+          <CodeDisplay value={folio.FOLIO_FORMATEADO} type={codeType} />
         </div>
       </div>
     </div>
   );
 }
 
-function TableHeaders() {
+function TableHeaders({ codeType }: { codeType: "qr" | "barcode" }) {
   return (
-    <div className="hidden lg:block px-6 py-4 border-b border-white/10 bg-white/[0.02]">
-      <div className="flex items-center gap-6 text-xs font-medium text-white/50 uppercase tracking-wider">
-        <div className="flex-shrink-0 w-56">Folio</div>
+    <div className="hidden lg:block px-8 py-5 border-b border-white/10 bg-white/[0.02]">
+      <div className="flex items-center gap-8 text-sm font-semibold text-white/60 uppercase tracking-wider">
+        <div className="flex-shrink-0 w-64">Folio</div>
         <div className="flex-1 min-w-0">Proveedor</div>
-        <div className="flex-shrink-0 w-44">Fecha Entrega</div>
-        <div className="flex-shrink-0 w-28 text-center">Código QR</div>
+        <div className="flex-shrink-0 w-48">Fecha Entrega</div>
+        <div className="flex-shrink-0 text-center min-w-[200px]">
+          {codeType === "qr" ? "Código QR" : "Código de Barras"}
+        </div>
         <div className="flex-shrink-0 w-12"></div>
       </div>
     </div>
@@ -211,6 +236,7 @@ export default function FoliosBoardVertical() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [codeType, setCodeType] = useState<"qr" | "barcode">("qr");
 
   const fetchFolios = async () => {
     if (!apiUrl) return;
@@ -249,6 +275,21 @@ export default function FoliosBoardVertical() {
       fetchFolios();
     }
   }, [apiUrl, isReady]);
+
+  useEffect(() => {
+    // Cargar preferencia de tipo de código (solo en cliente)
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("folioCodeType");
+        if (saved === "qr" || saved === "barcode") {
+          setCodeType(saved);
+        }
+      } catch (error) {
+        console.error("Error loading code type preference:", error);
+        // Mantener el valor por defecto "qr"
+      }
+    }
+  }, []);
 
   const handleFolioClick = (folio: string) => {
     console.log("Navegar a folio:", folio);
@@ -392,7 +433,7 @@ export default function FoliosBoardVertical() {
 
         {/* Table */}
         <div className="bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden">
-          <TableHeaders />
+          <TableHeaders codeType={codeType} />
 
           <div className="divide-y divide-white/5">
             {folios.length === 0 ? (
@@ -405,6 +446,7 @@ export default function FoliosBoardVertical() {
                 <FolioRow
                   key={`${folio.FOLIO_FORMATEADO}-${index}`}
                   folio={folio}
+                  codeType={codeType}
                   onClick={() => handleFolioClick(folio.FOLIO_FORMATEADO)}
                 />
               ))

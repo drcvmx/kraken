@@ -33,6 +33,7 @@ import {
   LayoutGrid,
 } from "lucide-react";
 import { CrearArticuloModal } from "@/components/crear-articulo-modal";
+import DashboardLayout from "@/components/layouts/dashboard-layout";
 import {
   Select,
   SelectContent,
@@ -847,807 +848,823 @@ export default function ArticulosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-purple-950/20">
-      {/* Header */}
-      <div className="border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-10">
-        <div className="max-w-[1800px] mx-auto px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Package className="w-5 h-5 text-purple-400" />
-              <div>
-                <h1 className="text-2xl font-light tracking-wide text-white">
-                  Artículos
-                </h1>
-                <p className="text-sm text-white/50 tracking-wide">
-                  Catálogo general de productos
-                  {selectedArticulos.size > 0 &&
-                    ` • ${selectedArticulos.size} seleccionados`}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-                <Input
-                  placeholder="Buscar artículos..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                  }}
-                  className="pl-10 w-64 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
-                />
-                {searchQuery && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setSearchQuery("");
-                    }}
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-white/40 hover:text-white"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
-                )}
-              </div>
-
-              {/* View Mode Selector */}
-              <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setViewMode("list")}
-                  className={`h-8 w-8 ${
-                    viewMode === "list"
-                      ? "bg-purple-600 text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  title="Vista de lista"
-                >
-                  <List className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setViewMode("small")}
-                  className={`h-8 w-8 ${
-                    viewMode === "small"
-                      ? "bg-purple-600 text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  title="Iconos pequeños"
-                >
-                  <Grid3x3 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setViewMode("medium")}
-                  className={`h-8 w-8 ${
-                    viewMode === "medium"
-                      ? "bg-purple-600 text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  title="Iconos medianos"
-                >
-                  <Grid2x2 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setViewMode("large")}
-                  className={`h-8 w-8 ${
-                    viewMode === "large"
-                      ? "bg-purple-600 text-white"
-                      : "text-white/60 hover:text-white"
-                  }`}
-                  title="Iconos grandes"
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={fetchArticulos}
-                className="text-white/70 hover:text-white hover:bg-white/10"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-              <Button
-                onClick={() => setCreateModalOpen(true)}
-                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
-              >
-                <Plus className="w-4 h-4" />
-                Crear Artículo
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-[1800px] mx-auto px-6 py-8">
-        {loading && (
-          <div className="flex items-center gap-3 text-white/70">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Cargando artículos...
-          </div>
-        )}
-
-        {error && (
-          <Card className="p-4 bg-red-500/10 border-red-500/20 backdrop-blur-xl">
-            <p className="text-red-400 font-light tracking-wide">{error}</p>
-          </Card>
-        )}
-
-        {!loading && !error && (
-          <div className="space-y-4">
-            {/* Excel import/export buttons */}
-            <div className="flex justify-between items-center gap-3">
-              <div className="text-white/60 text-sm">
-                {viewMode === "list"
-                  ? "Vista de lista"
-                  : viewMode === "small"
-                  ? "Iconos pequeños"
-                  : viewMode === "medium"
-                  ? "Iconos medianos"
-                  : "Iconos grandes"}
-              </div>
-              <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    alert("Funcionalidad de importar en desarrollo")
-                  }
-                  className="bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center gap-2"
-                >
-                  <FileUp className="w-4 h-4" />
-                  Importar Excel
-                </Button>
-                <Button
-                  onClick={handleExportExcel}
-                  className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                >
-                  <FileDown className="w-4 h-4" />
-                  Exportar Excel
-                </Button>
-              </div>
-            </div>
-
-            {/* Conditional rendering based on view mode */}
-            {viewMode === "list" ? (
-              /* Table View */
-              <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-white/10">
-                        <th className="text-left px-4 py-3 w-12">
-                          <Checkbox
-                            checked={isAllSelected}
-                            onCheckedChange={handleSelectAll}
-                            className="border-white/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
-                            aria-label="Seleccionar todos"
-                          />
-                        </th>
-                        {columnOrder.map((columnKey) => {
-                          const config = getColumnConfig(columnKey);
-                          const hasFilter = columnFilters[columnKey];
-                          const isSorted = sortColumn === columnKey;
-
-                          return (
-                            <th
-                              key={columnKey}
-                              draggable
-                              onDragStart={() => handleDragStart(columnKey)}
-                              onDragOver={(e) => handleDragOver(e, columnKey)}
-                              onDragEnd={handleDragEnd}
-                              className={`text-left px-4 py-3 text-white/70 font-light tracking-wide text-sm cursor-move hover:bg-white/5 transition ${
-                                columnKey === "acciones" ? "text-right" : ""
-                              } ${
-                                draggedColumn === columnKey ? "opacity-50" : ""
-                              }`}
-                            >
-                              <div className="flex items-center gap-2 justify-between">
-                                <div className="flex items-center gap-2">
-                                  <GripVertical className="w-3 h-3 text-white/30" />
-                                  {config.label}
-                                  {columnKey !== "acciones" && (
-                                    <button
-                                      onClick={() => handleSort(columnKey)}
-                                      className="p-1 rounded hover:bg-white/10 transition"
-                                    >
-                                      {isSorted ? (
-                                        sortDirection === "asc" ? (
-                                          <ArrowUp className="w-3.5 h-3.5 text-purple-400" />
-                                        ) : (
-                                          <ArrowDown className="w-3.5 h-3.5 text-purple-400" />
-                                        )
-                                      ) : (
-                                        <ArrowUpDown className="w-3.5 h-3.5 text-white/30" />
-                                      )}
-                                    </button>
-                                  )}
-                                </div>
-                                {config.filterable && (
-                                  <Popover>
-                                    <PopoverTrigger asChild>
-                                      <button
-                                        className={`p-1 rounded hover:bg-white/10 transition ${
-                                          hasFilter
-                                            ? "text-purple-400"
-                                            : "text-white/40"
-                                        }`}
-                                      >
-                                        <Filter className="w-3.5 h-3.5" />
-                                      </button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-80 bg-zinc-900 border-white/10 text-white">
-                                      <FilterPopover
-                                        columnKey={columnKey}
-                                        columnLabel={config.label}
-                                        currentFilter={columnFilters[columnKey]}
-                                        onApply={(filter) => {
-                                          if (filter) {
-                                            setColumnFilters({
-                                              ...columnFilters,
-                                              [columnKey]: filter,
-                                            });
-                                          } else {
-                                            const newFilters = {
-                                              ...columnFilters,
-                                            };
-                                            delete newFilters[columnKey];
-                                            setColumnFilters(newFilters);
-                                          }
-                                        }}
-                                        isNumeric={columnKey === "precio"}
-                                      />
-                                    </PopoverContent>
-                                  </Popover>
-                                )}
-                              </div>
-                            </th>
-                          );
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {paged.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={columnOrder.length + 1}
-                            className="px-4 py-8 text-center text-white/50"
-                          >
-                            No hay artículos que coincidan con los filtros
-                          </td>
-                        </tr>
-                      ) : (
-                        paged.map((item, idx) => (
-                          <tr
-                            key={item.ARTICULO_ID}
-                            className={`border-b border-white/5 hover:bg-white/[0.02] transition ${
-                              idx % 2 === 0 ? "bg-white/[0.01]" : ""
-                            } ${
-                              selectedArticulos.has(item.ARTICULO_ID)
-                                ? "bg-purple-500/5"
-                                : ""
-                            }`}
-                          >
-                            <td className="px-4 py-4">
-                              <Checkbox
-                                checked={selectedArticulos.has(
-                                  item.ARTICULO_ID
-                                )}
-                                onCheckedChange={(checked) =>
-                                  handleSelectArticulo(
-                                    item.ARTICULO_ID,
-                                    checked as boolean
-                                  )
-                                }
-                                className="border-white/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
-                                aria-label={`Seleccionar ${item.NOMBRE}`}
-                              />
-                            </td>
-                            {columnOrder.map((columnKey) => (
-                              <td
-                                key={columnKey}
-                                className={`px-4 py-4 ${
-                                  columnKey === "acciones" ? "text-right" : ""
-                                }`}
-                              >
-                                {renderCell(item, columnKey)}
-                              </td>
-                            ))}
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            ) : (
-              /* Grid View (Small, Medium, Large) */
-              <div
-                className={`grid gap-4 ${
-                  viewMode === "small"
-                    ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8"
-                    : viewMode === "medium"
-                    ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-                    : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
-                }`}
-              >
-                {paged.map((item) => (
-                  <ArticuloCard
-                    key={item.ARTICULO_ID}
-                    articulo={item}
-                    onView={verArticulo}
-                    apiUrl={apiUrl}
-                    onOpenGroup={(base: string) => openGroupModal(base)}
-                    size={viewMode}
-                  />
-                ))}
-              </div>
-            )}
-
-            {/* Pagination */}
-            <div className="flex items-center justify-between">
+    <DashboardLayout activeSection="CATÁLOGOS" showHeader={false}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900">
+        {/* Header */}
+        <div className="border-b border-white/10 bg-black/40 backdrop-blur-xl sticky top-0 z-10">
+          <div className="max-w-[1800px] mx-auto px-6 py-4">
+            <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <span className="text-white/50 text-sm">Filas por página:</span>
-                <select
-                  value={perPage}
-                  onChange={(e) => setPerPage(Number(e.target.value))}
-                  className="h-9 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:border-purple-500/50 focus:outline-none"
-                >
-                  {PER_PAGE_OPTIONS.map((n) => (
-                    <option key={n} value={n}>
-                      {n}
-                    </option>
-                  ))}
-                </select>
+                <Package className="w-5 h-5 text-purple-400" />
+                <div>
+                  <h1 className="text-2xl font-light tracking-wide text-white">
+                    Artículos
+                  </h1>
+                  <p className="text-sm text-white/50 tracking-wide">
+                    Catálogo general de productos
+                    {selectedArticulos.size > 0 &&
+                      ` • ${selectedArticulos.size} seleccionados`}
+                  </p>
+                </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="text-white/50 text-sm">
-                  {(currentPage - 1) * perPage + 1}–
-                  {Math.min(currentPage * perPage, filtered.length)} de{" "}
-                  {filtered.length}
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                  <Input
+                    placeholder="Buscar artículos..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                    }}
+                    className="pl-10 w-64 bg-white/5 border-white/10 text-white placeholder:text-white/40 focus:border-purple-500/50"
+                  />
+                  {searchQuery && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        setSearchQuery("");
+                      }}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 text-white/40 hover:text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
+
+                {/* View Mode Selector */}
+                <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
                   <Button
                     variant="ghost"
                     size="icon"
-                    disabled={currentPage === 1}
-                    onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    className="text-white/70 hover:text-white hover:bg-white/10 disabled:opacity-40 h-9 w-9"
+                    onClick={() => setViewMode("list")}
+                    className={`h-8 w-8 ${
+                      viewMode === "list"
+                        ? "bg-purple-600 text-white"
+                        : "text-white/60 hover:text-white"
+                    }`}
+                    title="Vista de lista"
                   >
-                    <ChevronLeft className="w-5 h-5" />
+                    <List className="w-4 h-4" />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
-                    disabled={currentPage === pageCount}
-                    onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-                    className="text-white/70 hover:text-white hover:bg-white/10 disabled:opacity-40 h-9 w-9"
+                    onClick={() => setViewMode("small")}
+                    className={`h-8 w-8 ${
+                      viewMode === "small"
+                        ? "bg-purple-600 text-white"
+                        : "text-white/60 hover:text-white"
+                    }`}
+                    title="Iconos pequeños"
                   >
-                    <ChevronRight className="w-5 h-5" />
+                    <Grid3x3 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setViewMode("medium")}
+                    className={`h-8 w-8 ${
+                      viewMode === "medium"
+                        ? "bg-purple-600 text-white"
+                        : "text-white/60 hover:text-white"
+                    }`}
+                    title="Iconos medianos"
+                  >
+                    <Grid2x2 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setViewMode("large")}
+                    className={`h-8 w-8 ${
+                      viewMode === "large"
+                        ? "bg-purple-600 text-white"
+                        : "text-white/60 hover:text-white"
+                    }`}
+                    title="Iconos grandes"
+                  >
+                    <LayoutGrid className="w-4 h-4" />
                   </Button>
                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
 
-      {/* Create Modal */}
-      <CrearArticuloModal
-        open={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onSuccess={() => {
-          fetchArticulos();
-        }}
-      />
-
-      {/* Detail Modal */}
-      {detailModalOpen && (
-        <div className="fixed inset-0 z-50">
-          <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={closeDetailModal}
-          />
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-5xl rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-950 to-black shadow-2xl overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
-                <div className="text-white/80">
-                  {detalle?.NOMBRE ?? "Artículo"}
-                </div>
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={closeDetailModal}
+                  onClick={fetchArticulos}
                   className="text-white/70 hover:text-white hover:bg-white/10"
                 >
-                  <X className="w-5 h-5" />
+                  <RefreshCw className="w-4 h-4" />
+                </Button>
+                <Button
+                  onClick={() => setCreateModalOpen(true)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Crear Artículo
                 </Button>
               </div>
+            </div>
+          </div>
+        </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-                <div className="p-6 border-r border-white/10 flex flex-col items-center justify-center bg-white/[0.02] gap-4">
-                  <div className="w-full max-w-md aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/40 relative">
-                    {imageLoading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-10">
-                        <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
-                      </div>
-                    )}
+        {/* Content */}
+        <div className="max-w-[1800px] mx-auto px-6 py-8">
+          {loading && (
+            <div className="flex items-center gap-3 text-white/70">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Cargando artículos...
+            </div>
+          )}
 
-                    {imagePreview ? (
-                      <img
-                        src={imagePreview || "/placeholder.svg"}
-                        alt="Preview"
-                        className="w-full h-full object-contain"
-                        onLoad={() => setImageLoading(false)}
-                      />
-                    ) : selectedId && detalle?.TIENE_IMAGEN ? (
-                      <img
-                        key={selectedId}
-                        src={`${apiUrl?.replace(
-                          /\/+$/,
-                          ""
-                        )}/artics/${encodeURIComponent(selectedId)}/imagen`}
-                        alt="Imagen del artículo"
-                        className="w-full h-full object-contain"
-                        onLoadStart={() => setImageLoading(true)}
-                        onLoad={() => setImageLoading(false)}
-                        onError={(e) => {
-                          setImageLoading(false);
-                          (e.currentTarget as HTMLImageElement).style.display =
-                            "none";
-                        }}
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-white/30 text-sm">
-                        Sin imagen
-                      </div>
-                    )}
+          {error && (
+            <Card className="p-4 bg-red-500/10 border-red-500/20 backdrop-blur-xl">
+              <p className="text-red-400 font-light tracking-wide">{error}</p>
+            </Card>
+          )}
+
+          {!loading && !error && (
+            <div className="space-y-4">
+              {/* Excel import/export buttons */}
+              <div className="flex justify-between items-center gap-3">
+                <div className="text-white/60 text-sm">
+                  {viewMode === "list"
+                    ? "Vista de lista"
+                    : viewMode === "small"
+                    ? "Iconos pequeños"
+                    : viewMode === "medium"
+                    ? "Iconos medianos"
+                    : "Iconos grandes"}
+                </div>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      alert("Funcionalidad de importar en desarrollo")
+                    }
+                    className="bg-white/5 border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center gap-2"
+                  >
+                    <FileUp className="w-4 h-4" />
+                    Importar Excel
+                  </Button>
+                  <Button
+                    onClick={handleExportExcel}
+                    className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                  >
+                    <FileDown className="w-4 h-4" />
+                    Exportar Excel
+                  </Button>
+                </div>
+              </div>
+
+              {/* Conditional rendering based on view mode */}
+              {viewMode === "list" ? (
+                /* Table View */
+                <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-white/10">
+                          <th className="text-left px-4 py-3 w-12">
+                            <Checkbox
+                              checked={isAllSelected}
+                              onCheckedChange={handleSelectAll}
+                              className="border-white/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                              aria-label="Seleccionar todos"
+                            />
+                          </th>
+                          {columnOrder.map((columnKey) => {
+                            const config = getColumnConfig(columnKey);
+                            const hasFilter = columnFilters[columnKey];
+                            const isSorted = sortColumn === columnKey;
+
+                            return (
+                              <th
+                                key={columnKey}
+                                draggable
+                                onDragStart={() => handleDragStart(columnKey)}
+                                onDragOver={(e) => handleDragOver(e, columnKey)}
+                                onDragEnd={handleDragEnd}
+                                className={`text-left px-4 py-3 text-white/70 font-light tracking-wide text-sm cursor-move hover:bg-white/5 transition ${
+                                  columnKey === "acciones" ? "text-right" : ""
+                                } ${
+                                  draggedColumn === columnKey
+                                    ? "opacity-50"
+                                    : ""
+                                }`}
+                              >
+                                <div className="flex items-center gap-2 justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <GripVertical className="w-3 h-3 text-white/30" />
+                                    {config.label}
+                                    {columnKey !== "acciones" && (
+                                      <button
+                                        onClick={() => handleSort(columnKey)}
+                                        className="p-1 rounded hover:bg-white/10 transition"
+                                      >
+                                        {isSorted ? (
+                                          sortDirection === "asc" ? (
+                                            <ArrowUp className="w-3.5 h-3.5 text-purple-400" />
+                                          ) : (
+                                            <ArrowDown className="w-3.5 h-3.5 text-purple-400" />
+                                          )
+                                        ) : (
+                                          <ArrowUpDown className="w-3.5 h-3.5 text-white/30" />
+                                        )}
+                                      </button>
+                                    )}
+                                  </div>
+                                  {config.filterable && (
+                                    <Popover>
+                                      <PopoverTrigger asChild>
+                                        <button
+                                          className={`p-1 rounded hover:bg-white/10 transition ${
+                                            hasFilter
+                                              ? "text-purple-400"
+                                              : "text-white/40"
+                                          }`}
+                                        >
+                                          <Filter className="w-3.5 h-3.5" />
+                                        </button>
+                                      </PopoverTrigger>
+                                      <PopoverContent className="w-80 bg-zinc-900 border-white/10 text-white">
+                                        <FilterPopover
+                                          columnKey={columnKey}
+                                          columnLabel={config.label}
+                                          currentFilter={
+                                            columnFilters[columnKey]
+                                          }
+                                          onApply={(filter) => {
+                                            if (filter) {
+                                              setColumnFilters({
+                                                ...columnFilters,
+                                                [columnKey]: filter,
+                                              });
+                                            } else {
+                                              const newFilters = {
+                                                ...columnFilters,
+                                              };
+                                              delete newFilters[columnKey];
+                                              setColumnFilters(newFilters);
+                                            }
+                                          }}
+                                          isNumeric={columnKey === "precio"}
+                                        />
+                                      </PopoverContent>
+                                    </Popover>
+                                  )}
+                                </div>
+                              </th>
+                            );
+                          })}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {paged.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={columnOrder.length + 1}
+                              className="px-4 py-8 text-center text-white/50"
+                            >
+                              No hay artículos que coincidan con los filtros
+                            </td>
+                          </tr>
+                        ) : (
+                          paged.map((item, idx) => (
+                            <tr
+                              key={item.ARTICULO_ID}
+                              className={`border-b border-white/5 hover:bg-white/[0.02] transition ${
+                                idx % 2 === 0 ? "bg-white/[0.01]" : ""
+                              } ${
+                                selectedArticulos.has(item.ARTICULO_ID)
+                                  ? "bg-purple-500/5"
+                                  : ""
+                              }`}
+                            >
+                              <td className="px-4 py-4">
+                                <Checkbox
+                                  checked={selectedArticulos.has(
+                                    item.ARTICULO_ID
+                                  )}
+                                  onCheckedChange={(checked) =>
+                                    handleSelectArticulo(
+                                      item.ARTICULO_ID,
+                                      checked as boolean
+                                    )
+                                  }
+                                  className="border-white/30 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                                  aria-label={`Seleccionar ${item.NOMBRE}`}
+                                />
+                              </td>
+                              {columnOrder.map((columnKey) => (
+                                <td
+                                  key={columnKey}
+                                  className={`px-4 py-4 ${
+                                    columnKey === "acciones" ? "text-right" : ""
+                                  }`}
+                                >
+                                  {renderCell(item, columnKey)}
+                                </td>
+                              ))}
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
                   </div>
+                </div>
+              ) : (
+                /* Grid View (Small, Medium, Large) */
+                <div
+                  className={`grid gap-4 ${
+                    viewMode === "small"
+                      ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8"
+                      : viewMode === "medium"
+                      ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+                      : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+                  }`}
+                >
+                  {paged.map((item) => (
+                    <ArticuloCard
+                      key={item.ARTICULO_ID}
+                      articulo={item}
+                      onView={verArticulo}
+                      apiUrl={apiUrl}
+                      onOpenGroup={(base: string) => openGroupModal(base)}
+                      size={viewMode}
+                    />
+                  ))}
+                </div>
+              )}
 
-                  {isEditMode && (
-                    <div className="w-full max-w-md">
-                      <Label htmlFor="image-upload" className="cursor-pointer">
-                        <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white">
-                          <Upload className="w-4 h-4" />
-                          <span className="text-sm">Cambiar imagen</span>
-                        </div>
-                        <input
-                          id="image-upload"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                          className="hidden"
-                        />
-                      </Label>
-                    </div>
-                  )}
+              {/* Pagination */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-white/50 text-sm">
+                    Filas por página:
+                  </span>
+                  <select
+                    value={perPage}
+                    onChange={(e) => setPerPage(Number(e.target.value))}
+                    className="h-9 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:border-purple-500/50 focus:outline-none"
+                  >
+                    {PER_PAGE_OPTIONS.map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <div className="p-6">
-                  {loadingDetalle && (
-                    <div className="flex items-center gap-2 text-white/60">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Cargando…
-                    </div>
-                  )}
-                  {errorDetalle && (
-                    <div className="rounded-md border border-red-500/20 bg-red-500/10 text-red-300 px-3 py-2">
-                      {errorDetalle}
-                    </div>
-                  )}
-                  {detalle && !loadingDetalle && !errorDetalle && (
-                    <div className="space-y-4">
-                      {isEditMode ? (
-                        <div className="space-y-2">
-                          <Label className="text-white/70">Nombre</Label>
-                          <Input
-                            value={editedData.NOMBRE || ""}
-                            onChange={(e) =>
-                              setEditedData({
-                                ...editedData,
-                                NOMBRE: e.target.value,
-                              })
-                            }
-                            className="bg-white/5 border-white/10 text-white"
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <h2 className="text-xl text-white font-light tracking-wide">
-                            {detalle.NOMBRE}
-                          </h2>
-                          <p className="text-white/50">
-                            {detalle.UNIDAD_VENTA}/{detalle.UNIDAD_COMPRA}
-                          </p>
+                <div className="flex items-center gap-4">
+                  <div className="text-white/50 text-sm">
+                    {(currentPage - 1) * perPage + 1}–
+                    {Math.min(currentPage * perPage, filtered.length)} de{" "}
+                    {filtered.length}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={currentPage === 1}
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                      className="text-white/70 hover:text-white hover:bg-white/10 disabled:opacity-40 h-9 w-9"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={currentPage === pageCount}
+                      onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
+                      className="text-white/70 hover:text-white hover:bg-white/10 disabled:opacity-40 h-9 w-9"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Create Modal */}
+        <CrearArticuloModal
+          open={createModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+          onSuccess={() => {
+            fetchArticulos();
+          }}
+        />
+
+        {/* Detail Modal */}
+        {detailModalOpen && (
+          <div className="fixed inset-0 z-50">
+            <div
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={closeDetailModal}
+            />
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="w-full max-w-5xl rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-950 to-black shadow-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
+                  <div className="text-white/80">
+                    {detalle?.NOMBRE ?? "Artículo"}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={closeDetailModal}
+                    className="text-white/70 hover:text-white hover:bg-white/10"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+                  <div className="p-6 border-r border-white/10 flex flex-col items-center justify-center bg-white/[0.02] gap-4">
+                    <div className="w-full max-w-md aspect-square rounded-xl overflow-hidden border border-white/10 bg-black/40 relative">
+                      {imageLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-10">
+                          <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
                         </div>
                       )}
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                        <InfoRow
-                          label="Costo:"
-                          value={fmtMoney(detalle.PRECIO_LISTA)}
+                      {imagePreview ? (
+                        <img
+                          src={imagePreview || "/placeholder.svg"}
+                          alt="Preview"
+                          className="w-full h-full object-contain"
+                          onLoad={() => setImageLoading(false)}
                         />
-                        {detalle.PRECIO_DISTRIBUIDOR != null && (
-                          <InfoRow
-                            label="Precio distribuidor"
-                            value={fmtMoney(detalle.PRECIO_DISTRIBUIDOR || 0)}
-                          />
-                        )}
-                        <InfoRow label="Línea" value={detalle.LINEA ?? "—"} />
-                        <InfoRow
-                          label="Impuesto"
-                          value={detalle.IMPUESTO ?? "—"}
+                      ) : selectedId && detalle?.TIENE_IMAGEN ? (
+                        <img
+                          key={selectedId}
+                          src={`${apiUrl?.replace(
+                            /\/+$/,
+                            ""
+                          )}/artics/${encodeURIComponent(selectedId)}/imagen`}
+                          alt="Imagen del artículo"
+                          className="w-full h-full object-contain"
+                          onLoadStart={() => setImageLoading(true)}
+                          onLoad={() => setImageLoading(false)}
+                          onError={(e) => {
+                            setImageLoading(false);
+                            (
+                              e.currentTarget as HTMLImageElement
+                            ).style.display = "none";
+                          }}
                         />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-white/30 text-sm">
+                          Sin imagen
+                        </div>
+                      )}
+                    </div>
 
+                    {isEditMode && (
+                      <div className="w-full max-w-md">
+                        <Label
+                          htmlFor="image-upload"
+                          className="cursor-pointer"
+                        >
+                          <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition text-white/70 hover:text-white">
+                            <Upload className="w-4 h-4" />
+                            <span className="text-sm">Cambiar imagen</span>
+                          </div>
+                          <input
+                            id="image-upload"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                          />
+                        </Label>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-6">
+                    {loadingDetalle && (
+                      <div className="flex items-center gap-2 text-white/60">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Cargando…
+                      </div>
+                    )}
+                    {errorDetalle && (
+                      <div className="rounded-md border border-red-500/20 bg-red-500/10 text-red-300 px-3 py-2">
+                        {errorDetalle}
+                      </div>
+                    )}
+                    {detalle && !loadingDetalle && !errorDetalle && (
+                      <div className="space-y-4">
                         {isEditMode ? (
-                          <>
-                            <EditableField
-                              label="SKU"
-                              value={editedData.CLAVE_ARTICULO || ""}
-                              onChange={(val) =>
+                          <div className="space-y-2">
+                            <Label className="text-white/70">Nombre</Label>
+                            <Input
+                              value={editedData.NOMBRE || ""}
+                              onChange={(e) =>
                                 setEditedData({
                                   ...editedData,
-                                  CLAVE_ARTICULO: val,
+                                  NOMBRE: e.target.value,
                                 })
                               }
+                              className="bg-white/5 border-white/10 text-white"
                             />
-                            <EditableField
-                              label="Código barras"
-                              value={editedData.CLAVE_BARRAS || ""}
-                              onChange={(val) =>
-                                setEditedData({
-                                  ...editedData,
-                                  CLAVE_BARRAS: val,
-                                })
-                              }
-                            />
+                          </div>
+                        ) : (
+                          <div>
+                            <h2 className="text-xl text-white font-light tracking-wide">
+                              {detalle.NOMBRE}
+                            </h2>
+                            <p className="text-white/50">
+                              {detalle.UNIDAD_VENTA}/{detalle.UNIDAD_COMPRA}
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                          <InfoRow
+                            label="Costo:"
+                            value={fmtMoney(detalle.PRECIO_LISTA)}
+                          />
+                          {detalle.PRECIO_DISTRIBUIDOR != null && (
                             <InfoRow
-                              label="Almacén"
-                              value={detalle.ALMACEN ?? "—"}
+                              label="Precio distribuidor"
+                              value={fmtMoney(detalle.PRECIO_DISTRIBUIDOR || 0)}
                             />
-                            <EditableField
-                              label="Localización"
-                              value={editedData.LOCALIZACION || ""}
-                              onChange={(val) =>
-                                setEditedData({
-                                  ...editedData,
-                                  LOCALIZACION: val,
-                                })
-                              }
-                            />
-                            <EditableField
-                              label="Inv. Mínimo"
-                              type="number"
-                              value={
-                                editedData.INVENTARIO_MINIMO?.toString() || "0"
-                              }
-                              onChange={(val) =>
-                                setEditedData({
-                                  ...editedData,
-                                  INVENTARIO_MINIMO: Number(val),
-                                })
-                              }
-                            />
-                            <EditableField
-                              label="Punto Reorden"
-                              type="number"
-                              value={
-                                editedData.PUNTO_REORDEN?.toString() || "0"
-                              }
-                              onChange={(val) =>
-                                setEditedData({
-                                  ...editedData,
-                                  PUNTO_REORDEN: Number(val),
-                                })
-                              }
-                            />
-                            <EditableField
-                              label="Inv. Máximo"
-                              type="number"
-                              value={
-                                editedData.INVENTARIO_MAXIMO?.toString() || "0"
-                              }
-                              onChange={(val) =>
-                                setEditedData({
-                                  ...editedData,
-                                  INVENTARIO_MAXIMO: Number(val),
-                                })
-                              }
-                            />
-                            <div className="space-y-2">
-                              <Label className="text-white/40 text-xs">
-                                Unidad Venta
-                              </Label>
-                              <Select
-                                value={
-                                  editedData.UNIDAD_VENTA ||
-                                  detalle.UNIDAD_VENTA
-                                }
-                                onValueChange={(val) =>
+                          )}
+                          <InfoRow label="Línea" value={detalle.LINEA ?? "—"} />
+                          <InfoRow
+                            label="Impuesto"
+                            value={detalle.IMPUESTO ?? "—"}
+                          />
+
+                          {isEditMode ? (
+                            <>
+                              <EditableField
+                                label="SKU"
+                                value={editedData.CLAVE_ARTICULO || ""}
+                                onChange={(val) =>
                                   setEditedData({
                                     ...editedData,
-                                    UNIDAD_VENTA: val,
+                                    CLAVE_ARTICULO: val,
                                   })
                                 }
-                              >
-                                <SelectTrigger className="bg-white/5 border-white/10 text-white">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="PAR">PAR</SelectItem>
-                                  <SelectItem value="PZA">PZA</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <InfoRow
-                              label="SKU"
-                              value={detalle.CLAVE_ARTICULO ?? "—"}
-                            />
-                            <InfoRow
-                              label="Código barras"
-                              value={detalle.CLAVE_BARRAS ?? "—"}
-                            />
-                            <InfoRow
-                              label="Almacén"
-                              value={detalle.ALMACEN ?? "—"}
-                            />
-                            <InfoRow
-                              label="Localización"
-                              value={detalle.LOCALIZACION ?? "—"}
-                            />
-                            {detalle.INVENTARIO_MINIMO != null && (
+                              />
+                              <EditableField
+                                label="Código barras"
+                                value={editedData.CLAVE_BARRAS || ""}
+                                onChange={(val) =>
+                                  setEditedData({
+                                    ...editedData,
+                                    CLAVE_BARRAS: val,
+                                  })
+                                }
+                              />
                               <InfoRow
+                                label="Almacén"
+                                value={detalle.ALMACEN ?? "—"}
+                              />
+                              <EditableField
+                                label="Localización"
+                                value={editedData.LOCALIZACION || ""}
+                                onChange={(val) =>
+                                  setEditedData({
+                                    ...editedData,
+                                    LOCALIZACION: val,
+                                  })
+                                }
+                              />
+                              <EditableField
                                 label="Inv. Mínimo"
-                                value={detalle.INVENTARIO_MINIMO}
+                                type="number"
+                                value={
+                                  editedData.INVENTARIO_MINIMO?.toString() ||
+                                  "0"
+                                }
+                                onChange={(val) =>
+                                  setEditedData({
+                                    ...editedData,
+                                    INVENTARIO_MINIMO: Number(val),
+                                  })
+                                }
                               />
-                            )}
-                            {detalle.PUNTO_REORDEN != null && (
-                              <InfoRow
+                              <EditableField
                                 label="Punto Reorden"
-                                value={detalle.PUNTO_REORDEN}
+                                type="number"
+                                value={
+                                  editedData.PUNTO_REORDEN?.toString() || "0"
+                                }
+                                onChange={(val) =>
+                                  setEditedData({
+                                    ...editedData,
+                                    PUNTO_REORDEN: Number(val),
+                                  })
+                                }
                               />
-                            )}
-                            {detalle.INVENTARIO_MAXIMO != null && (
-                              <InfoRow
+                              <EditableField
                                 label="Inv. Máximo"
-                                value={detalle.INVENTARIO_MAXIMO}
+                                type="number"
+                                value={
+                                  editedData.INVENTARIO_MAXIMO?.toString() ||
+                                  "0"
+                                }
+                                onChange={(val) =>
+                                  setEditedData({
+                                    ...editedData,
+                                    INVENTARIO_MAXIMO: Number(val),
+                                  })
+                                }
                               />
-                            )}
-                          </>
-                        )}
-                      </div>
-
-                      <div className="pt-2 flex items-center gap-2">
-                        {isEditMode ? (
-                          <>
-                            <Button
-                              className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
-                              onClick={handleSave}
-                              disabled={saving}
-                            >
-                              {saving ? (
-                                <>
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                  Guardando...
-                                </>
-                              ) : (
-                                <>
-                                  <Save className="w-4 h-4" />
-                                  Guardar
-                                </>
+                              <div className="space-y-2">
+                                <Label className="text-white/40 text-xs">
+                                  Unidad Venta
+                                </Label>
+                                <Select
+                                  value={
+                                    editedData.UNIDAD_VENTA ||
+                                    detalle.UNIDAD_VENTA
+                                  }
+                                  onValueChange={(val) =>
+                                    setEditedData({
+                                      ...editedData,
+                                      UNIDAD_VENTA: val,
+                                    })
+                                  }
+                                >
+                                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="PAR">PAR</SelectItem>
+                                    <SelectItem value="PZA">PZA</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <InfoRow
+                                label="SKU"
+                                value={detalle.CLAVE_ARTICULO ?? "—"}
+                              />
+                              <InfoRow
+                                label="Código barras"
+                                value={detalle.CLAVE_BARRAS ?? "—"}
+                              />
+                              <InfoRow
+                                label="Almacén"
+                                value={detalle.ALMACEN ?? "—"}
+                              />
+                              <InfoRow
+                                label="Localización"
+                                value={detalle.LOCALIZACION ?? "—"}
+                              />
+                              {detalle.INVENTARIO_MINIMO != null && (
+                                <InfoRow
+                                  label="Inv. Mínimo"
+                                  value={detalle.INVENTARIO_MINIMO}
+                                />
                               )}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              className="text-white/70 hover:text-white hover:bg-white/10"
-                              onClick={() => {
-                                setIsEditMode(false);
-                                setEditedData({});
-                                setImagePreview(null);
-                              }}
-                              disabled={saving}
-                            >
-                              Cancelar
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
-                              onClick={handleEditClick}
-                            >
-                              <Pencil className="w-4 h-4" />
-                              Editar
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              className="text-white/70 hover:text-white hover:bg-white/10"
-                              onClick={closeDetailModal}
-                            >
-                              Cerrar
-                            </Button>
-                          </>
-                        )}
+                              {detalle.PUNTO_REORDEN != null && (
+                                <InfoRow
+                                  label="Punto Reorden"
+                                  value={detalle.PUNTO_REORDEN}
+                                />
+                              )}
+                              {detalle.INVENTARIO_MAXIMO != null && (
+                                <InfoRow
+                                  label="Inv. Máximo"
+                                  value={detalle.INVENTARIO_MAXIMO}
+                                />
+                              )}
+                            </>
+                          )}
+                        </div>
+
+                        <div className="pt-2 flex items-center gap-2">
+                          {isEditMode ? (
+                            <>
+                              <Button
+                                className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                                onClick={handleSave}
+                                disabled={saving}
+                              >
+                                {saving ? (
+                                  <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Guardando...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Save className="w-4 h-4" />
+                                    Guardar
+                                  </>
+                                )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                className="text-white/70 hover:text-white hover:bg-white/10"
+                                onClick={() => {
+                                  setIsEditMode(false);
+                                  setEditedData({});
+                                  setImagePreview(null);
+                                }}
+                                disabled={saving}
+                              >
+                                Cancelar
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                className="bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2"
+                                onClick={handleEditClick}
+                              >
+                                <Pencil className="w-4 h-4" />
+                                Editar
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                className="text-white/70 hover:text-white hover:bg-white/10"
+                                onClick={closeDetailModal}
+                              >
+                                Cerrar
+                              </Button>
+                            </>
+                          )}
+                        </div>
                       </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Group Modal: show SKUs that belong to the same base */}
+        {groupModalOpen && (
+          <div className="fixed inset-0 z-50">
+            <div
+              className="absolute inset-0 bg-black/60"
+              onClick={closeGroupModal}
+            />
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-950 to-black shadow-2xl overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
+                  <div className="text-white/80">
+                    Variantes: {groupModalBase}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={closeGroupModal}
+                    className="text-white/70"
+                  >
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                <div className="p-4 space-y-3">
+                  {groupModalItems.length === 0 ? (
+                    <div className="text-white/50">
+                      No se encontraron variantes
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {groupModalItems.map((it) => (
+                        <div
+                          key={it.ARTICULO_ID}
+                          className="flex items-center justify-between gap-4 p-3 rounded-md bg-white/3 border border-white/5"
+                        >
+                          <div className="text-sm text-white">
+                            {it.CLAVE_ARTICULO || it.NOMBRE}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-sm text-white/60">
+                              {fmtMoney(it.PRECIO_LISTA)}
+                            </div>
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                closeGroupModal();
+                                verArticulo(it.ARTICULO_ID);
+                              }}
+                            >
+                              Ver
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
-      {/* Group Modal: show SKUs that belong to the same base */}
-      {groupModalOpen && (
-        <div className="fixed inset-0 z-50">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={closeGroupModal}
-          />
-          <div className="absolute inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-950 to-black shadow-2xl overflow-hidden">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
-                <div className="text-white/80">Variantes: {groupModalBase}</div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={closeGroupModal}
-                  className="text-white/70"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-
-              <div className="p-4 space-y-3">
-                {groupModalItems.length === 0 ? (
-                  <div className="text-white/50">
-                    No se encontraron variantes
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {groupModalItems.map((it) => (
-                      <div
-                        key={it.ARTICULO_ID}
-                        className="flex items-center justify-between gap-4 p-3 rounded-md bg-white/3 border border-white/5"
-                      >
-                        <div className="text-sm text-white">
-                          {it.CLAVE_ARTICULO || it.NOMBRE}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="text-sm text-white/60">
-                            {fmtMoney(it.PRECIO_LISTA)}
-                          </div>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              closeGroupModal();
-                              verArticulo(it.ARTICULO_ID);
-                            }}
-                          >
-                            Ver
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </DashboardLayout>
   );
 }
 

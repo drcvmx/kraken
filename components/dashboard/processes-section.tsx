@@ -1,19 +1,31 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useRouter } from "next/navigation"
-import { Inbox, LucideWarehouse, ScanBarcode, BoxIcon, ChevronRight } from "lucide-react"
-import { useCompany } from "@/lib/company-context"
+import type React from "react";
+import { useRouter } from "next/navigation";
+import {
+  Inbox,
+  LucideWarehouse,
+  ScanBarcode,
+  BoxIcon,
+  ChevronRight,
+} from "lucide-react";
+import { useCompany } from "@/lib/company-context";
 
 interface ModuleCardProps {
-  title: string
-  description: string
-  icon: React.ComponentType<{ className?: string }>
-  version: string
-  onClick?: () => void
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  version: string;
+  onClick?: () => void;
 }
 
-function ModuleCard({ title, description, icon: Icon, version, onClick }: ModuleCardProps) {
+function ModuleCard({
+  title,
+  description,
+  icon: Icon,
+  version,
+  onClick,
+}: ModuleCardProps) {
   return (
     <div
       onClick={onClick}
@@ -28,8 +40,12 @@ function ModuleCard({ title, description, icon: Icon, version, onClick }: Module
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
-            <h4 className="text-base font-medium text-white/90 group-hover:text-white transition-colors">{title}</h4>
-            <span className="text-[10px] text-white/30 font-mono">{version}</span>
+            <h4 className="text-base font-medium text-white/90 group-hover:text-white transition-colors">
+              {title}
+            </h4>
+            <span className="text-[10px] text-white/30 font-mono">
+              {version}
+            </span>
           </div>
           <p className="text-sm text-white/40 group-hover:text-white/60 transition-colors line-clamp-1">
             {description}
@@ -44,103 +60,96 @@ function ModuleCard({ title, description, icon: Icon, version, onClick }: Module
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type ModuleDef = {
-  id: number
-  title: string
-  description: string
-  icon: React.ComponentType<{ className?: string }>
-  version: string
-  path: string
-  group: "principal" | "alternativo"
-}
+  id: number;
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  version: string;
+  path: string;
+  group: "principal" | "alternativo";
+};
 
 export default function ProcessesSection() {
-  const router = useRouter()
-  const { userData, companyData } = useCompany()
+  const router = useRouter();
+  const { userData, companyData } = useCompany();
 
   // Módulos definidos con ID
   const modules: ModuleDef[] = [
     {
       id: 1,
-      title: "RECIBO",
-      description: "Registra la entrada de mercancía, valida contra órdenes de compra y asegura cantidades correctas, ORDEN DE COMPRA",
+      title: "Recibo",
+      description:
+        "Registra la entrada de mercancía, valida contra órdenes de compra y asegura cantidades correctas, ORDEN DE COMPRA",
       icon: Inbox,
       version: "v2.1.0",
       path: "/recibo",
       group: "principal",
     },
-       {
-      id: 5,
-      title: "RECIBO",
-      description: "Registra la entrada de mercancía sin Microsip.",
-      icon: Inbox,
-      version: "v2.1.0",
-      path: "/snMicro",
-      group: "principal",
-    },
+
     {
       id: 2,
-      title: "ACOMODO",
-      description: "Ubica y organiza la mercancía recibida en su posición correcta dentro del almacén.",
+      title: "Acomodo",
+      description:
+        "Ubica y organiza la mercancía recibida en su posición correcta dentro del almacén.",
       icon: LucideWarehouse,
       version: "v2.1.0",
       path: "/acomodo",
       group: "principal",
     },
-    {
-      id: 3,
-      title: "PICKING",
-      description: "Prepara los productos solicitados tomando la mercancía de su ubicación en almacén.",
-      icon: ScanBarcode,
-      version: "v2.1.0",
-      path: "/picking",
-      group: "principal",
-    },
+
     {
       id: 4,
-      title: "PACKING",
-      description: "Empaca y consolida los productos seleccionados para el envío o entrega.",
+      title: "Packing",
+      description:
+        "Empaca y consolida los productos seleccionados para el envío o entrega.",
       icon: BoxIcon,
       version: "v2.1.0",
       path: "/ordenes-packing",
       group: "principal",
     },
- 
-  ]
+  ];
 
   // Permisos desde el login (normalizados)
-  const allowed = new Set<number>(userData?.modulosKrknArr ?? [])
+  const allowed = new Set<number>(userData?.modulosKrknArr ?? []);
 
   // Regla especial: para el cliente GOUMAM mostramos únicamente el módulo snMicro (id 5).
   // Para cualquier otro cliente mostramos todos los módulos.
   const isGoumam = (() => {
     try {
-      const code = (companyData?.codigo || "").toString().toLowerCase()
-      const name = (companyData?.nombre || "").toString().toLowerCase()
-      return code.includes("goumam") || name.includes("goumam")
+      const code = (companyData?.codigo || "").toString().toLowerCase();
+      const name = (companyData?.nombre || "").toString().toLowerCase();
+      return code.includes("goumam") || name.includes("goumam");
     } catch {
-      return false
+      return false;
     }
-  })()
+  })();
 
   // For GOUMAM show modules with id 2 (ACOMODO) and 5 (SNMICRO)
-  const effectiveModules = isGoumam ? modules.filter((m) => [2, 5].includes(m.id)) : modules
+  const effectiveModules = isGoumam
+    ? modules.filter((m) => [2, 5].includes(m.id))
+    : modules;
 
-  const principales = effectiveModules.filter((m) => m.group === "principal")
-  const alternativos = effectiveModules.filter((m) => m.group === "alternativo")
+  const principales = effectiveModules.filter((m) => m.group === "principal");
+  const alternativos = effectiveModules.filter(
+    (m) => m.group === "alternativo"
+  );
 
-  const go = (path: string) => () => router.push(path)
+  const go = (path: string) => () => router.push(path);
 
   return (
     <div className="min-h-screen bg-black p-8">
       <div className="max-w-5xl mx-auto space-y-8">
         <div className="space-y-1 pb-4 border-b border-white/10">
-          <h2 className="text-2xl font-semibold text-white">Procesos y Módulos</h2>
-          <p className="text-sm text-white/40">Gestiona tus operaciones de almacén</p>
-          
+          <h2 className="text-2xl font-semibold text-white">
+            Procesos y Módulos
+          </h2>
+          <p className="text-sm text-white/40">
+            Gestiona tus operaciones de almacén
+          </p>
         </div>
 
         <div className="space-y-8">
@@ -192,5 +201,5 @@ export default function ProcessesSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -12,8 +12,9 @@ import {
   type InventoryItem,
 } from "@/lib/warehouse-data"
 import { AddWarehouseDialog } from "./add-warehouse-dialog"
-
 import { RackConfigDialog } from "./rack-config-warehouse"
+import DashboardLayout from "@/components/layouts/dashboard-layout"
+
 export default function AlmacenesPage() {
   const router = useRouter()
   const [selectedWarehouse, setSelectedWarehouse] = useState("b1")
@@ -138,7 +139,8 @@ export default function AlmacenesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900">
+    <DashboardLayout activeSection="LAYOUT" showHeader={false}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900">
 
       {/* Warehouse Selection Bar */}
       <div className="border-b border-white/5 backdrop-blur-xl bg-black/40">
@@ -576,6 +578,7 @@ export default function AlmacenesPage() {
           // Refresh or update state if needed
         }}
       />
-    </div>
+      </div>
+    </DashboardLayout>
   )
 }

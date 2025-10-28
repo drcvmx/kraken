@@ -133,20 +133,20 @@ const ProductCard = ({
         </div>
 
         {/* Location Info */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-4 border border-blue-100">
+        <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl p-4 mb-4 border border-blue-500/30">
           <div className="mb-3">
-            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1">
               Ubicación en {currentAlmacen.nombre}
             </p>
-            <p className="text-lg font-bold text-blue-900">
+            <p className="text-lg font-bold text-white">
               {currentAlmacen.ubicacion || "Sin ubicación"}
             </p>
           </div>
           <div>
-            <p className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-1">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wide mb-1">
               Existencias en almacén
             </p>
-            <p className="text-lg font-bold text-emerald-600">
+            <p className="text-lg font-bold text-emerald-400">
               {currentAlmacen.existencia || 0}
             </p>
           </div>
@@ -154,24 +154,24 @@ const ProductCard = ({
 
         {/* Additional Info */}
         {(product.existencia || product.descuento) && (
-          <div className="bg-neutral-50 rounded-xl p-4 mb-4 border border-neutral-200">
+          <div className="bg-white/5 rounded-xl p-4 mb-4 border border-white/10">
             <div className="grid grid-cols-2 gap-4">
               {product.existencia && (
                 <div>
-                  <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wide mb-1">
+                  <p className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-1">
                     Existencias totales
                   </p>
-                  <p className="text-lg font-bold text-emerald-600">
+                  <p className="text-lg font-bold text-emerald-400">
                     {product.existencia}
                   </p>
                 </div>
               )}
               {product.descuento && (
                 <div>
-                  <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wide mb-1">
+                  <p className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-1">
                     Descuento
                   </p>
-                  <p className="text-lg font-bold text-red-500">
+                  <p className="text-lg font-bold text-red-400">
                     {product.descuento}%
                   </p>
                 </div>
@@ -184,31 +184,31 @@ const ProductCard = ({
         {(currentAlmacen.inventario_maximo ||
           currentAlmacen.punto_reorden ||
           currentAlmacen.inventario_minimo) && (
-          <div className="bg-neutral-50 rounded-xl p-4 mb-6 border border-neutral-200">
-            <p className="text-xs font-semibold text-neutral-600 uppercase tracking-wide mb-3">
+          <div className="bg-white/5 rounded-xl p-4 mb-6 border border-white/10">
+            <p className="text-xs font-semibold text-white/60 uppercase tracking-wide mb-3">
               Niveles de inventario
             </p>
             <div className="grid grid-cols-3 gap-3">
               {currentAlmacen.inventario_maximo && (
                 <div>
-                  <p className="text-xs text-neutral-500">Máximo</p>
-                  <p className="text-sm font-semibold text-emerald-600">
+                  <p className="text-xs text-white/50">Máximo</p>
+                  <p className="text-sm font-semibold text-emerald-400">
                     {currentAlmacen.inventario_maximo}
                   </p>
                 </div>
               )}
               {currentAlmacen.punto_reorden && (
                 <div>
-                  <p className="text-xs text-neutral-500">Reorden</p>
-                  <p className="text-sm font-semibold text-amber-600">
+                  <p className="text-xs text-white/50">Reorden</p>
+                  <p className="text-sm font-semibold text-amber-400">
                     {currentAlmacen.punto_reorden}
                   </p>
                 </div>
               )}
               {currentAlmacen.inventario_minimo && (
                 <div>
-                  <p className="text-xs text-neutral-500">Mínimo</p>
-                  <p className="text-sm font-semibold text-red-500">
+                  <p className="text-xs text-white/50">Mínimo</p>
+                  <p className="text-sm font-semibold text-red-400">
                     {currentAlmacen.inventario_minimo}
                   </p>
                 </div>
@@ -221,28 +221,28 @@ const ProductCard = ({
         <div className="grid grid-cols-3 gap-3">
           <button
             onClick={onImagePress}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition-colors duration-200"
+            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 transition-colors duration-200"
           >
-            <ImageIcon className="w-5 h-5 text-blue-600" />
-            <span className="text-xs font-semibold text-blue-700">Imagen</span>
+            <ImageIcon className="w-5 h-5 text-blue-400" />
+            <span className="text-xs font-semibold text-blue-400">Imagen</span>
           </button>
 
           <button
             onClick={onEdit}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors duration-200"
+            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 transition-colors duration-200"
           >
-            <MapPin className="w-5 h-5 text-amber-600" />
-            <span className="text-xs font-semibold text-amber-700">
+            <MapPin className="w-5 h-5 text-amber-400" />
+            <span className="text-xs font-semibold text-amber-400">
               Ubicación
             </span>
           </button>
 
           <button
             onClick={() => setShowDetailsModal(true)}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-colors duration-200"
+            className="flex flex-col items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors duration-200"
           >
-            <Info className="w-5 h-5 text-emerald-600" />
-            <span className="text-xs font-semibold text-emerald-700">
+            <Info className="w-5 h-5 text-emerald-400" />
+            <span className="text-xs font-semibold text-emerald-400">
               Detalles
             </span>
           </button>
@@ -252,48 +252,48 @@ const ProductCard = ({
       {/* Details Modal */}
       {showDetailsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 max-w-md w-full max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500/30 scrollbar-track-white/5">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-neutral-900">
+              <h3 className="text-xl font-bold text-white">
                 Detalles del Producto
               </h3>
               <button
                 onClick={() => setShowDetailsModal(false)}
-                className="p-2 rounded-xl bg-neutral-100 hover:bg-neutral-200 transition-colors duration-200"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors duration-200"
               >
-                <X className="w-5 h-5 text-neutral-600" />
+                <X className="w-5 h-5 text-white/90" />
               </button>
             </div>
 
             <div className="space-y-4">
               {/* Product Info */}
-              <div className="bg-neutral-50 rounded-xl p-4">
-                <h4 className="text-sm font-semibold text-neutral-700 mb-3">
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                <h4 className="text-sm font-semibold text-white/90 mb-3">
                   Información
                 </h4>
                 <div className="space-y-2">
                   <div>
-                    <p className="text-xs text-neutral-500">Clave</p>
-                    <p className="font-semibold text-neutral-900">
+                    <p className="text-xs text-white/50">Clave</p>
+                    <p className="font-semibold text-white">
                       {product.clave_articulo}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-neutral-500">Nombre</p>
-                    <p className="text-sm text-neutral-700">{product.nombre}</p>
+                    <p className="text-xs text-white/50">Nombre</p>
+                    <p className="text-sm text-white/70">{product.nombre}</p>
                   </div>
                   {product.marca && (
                     <div>
-                      <p className="text-xs text-neutral-500">Marca</p>
-                      <p className="font-semibold text-emerald-600">
+                      <p className="text-xs text-white/50">Marca</p>
+                      <p className="font-semibold text-emerald-400">
                         {product.marca}
                       </p>
                     </div>
                   )}
                   {product.linea_articulo && (
                     <div>
-                      <p className="text-xs text-neutral-500">Línea</p>
-                      <p className="font-semibold text-blue-600">
+                      <p className="text-xs text-white/50">Línea</p>
+                      <p className="font-semibold text-blue-400">
                         {product.linea_articulo}
                       </p>
                     </div>
@@ -303,23 +303,23 @@ const ProductCard = ({
 
               {/* Pricing */}
               {(product.precio_publico || product.descuento) && (
-                <div className="bg-neutral-50 rounded-xl p-4">
-                  <h4 className="text-sm font-semibold text-neutral-700 mb-3">
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                  <h4 className="text-sm font-semibold text-white/90 mb-3">
                     Precios
                   </h4>
                   <div className="space-y-2">
                     {product.precio_publico && (
                       <div>
-                        <p className="text-xs text-neutral-500">Precio</p>
-                        <p className="font-semibold text-emerald-600">
+                        <p className="text-xs text-white/50">Precio</p>
+                        <p className="font-semibold text-emerald-400">
                           ${product.precio_publico.toFixed(2)}
                         </p>
                       </div>
                     )}
                     {product.descuento && (
                       <div>
-                        <p className="text-xs text-neutral-500">Descuento</p>
-                        <p className="font-semibold text-red-500">
+                        <p className="text-xs text-white/50">Descuento</p>
+                        <p className="font-semibold text-red-400">
                           {product.descuento}%
                         </p>
                       </div>
@@ -329,8 +329,8 @@ const ProductCard = ({
               )}
 
               {/* Inventory */}
-              <div className="bg-neutral-50 rounded-xl p-4">
-                <h4 className="text-sm font-semibold text-neutral-700 mb-3">
+              <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                <h4 className="text-sm font-semibold text-white/90 mb-3">
                   Inventario
                 </h4>
                 <div className="space-y-3">
@@ -343,19 +343,19 @@ const ProductCard = ({
                     .map(([key, almacen]) => (
                       <div
                         key={key}
-                        className="flex justify-between items-center py-2 border-b border-neutral-200 last:border-b-0"
+                        className="flex justify-between items-center py-2 border-b border-white/10 last:border-b-0"
                       >
                         <div>
-                          <p className="text-sm font-medium text-neutral-900">
+                          <p className="text-sm font-medium text-white">
                             {almacen.nombre.length > 20
                               ? almacen.nombre.substring(0, 20) + "..."
                               : almacen.nombre}
                           </p>
-                          <p className="text-xs text-amber-600">
+                          <p className="text-xs text-amber-400">
                             {almacen.ubicacion || "Sin ubicación"}
                           </p>
                         </div>
-                        <p className="font-semibold text-emerald-600">
+                        <p className="font-semibold text-emerald-400">
                           {almacen.existencia}
                         </p>
                       </div>
@@ -742,26 +742,26 @@ function CatalogoAlmacenPremiumInner() {
       {/* Edit Location Modal */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+          <div className="bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 max-w-md w-full">
             <div className="text-center mb-6">
-              <div className="w-12 h-12 rounded-xl bg-amber-100 border border-amber-200 flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-6 h-6 text-amber-600" />
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-6 h-6 text-amber-400" />
               </div>
-              <h3 className="text-xl font-bold text-neutral-900 mb-2">
+              <h3 className="text-xl font-bold text-white mb-2">
                 Editar Ubicación
               </h3>
-              <p className="text-neutral-600">{producto?.clave_articulo}</p>
+              <p className="text-white/60">{producto?.clave_articulo}</p>
             </div>
 
             <div className="mb-6">
-              <label className="block text-sm font-semibold text-neutral-700 mb-2">
+              <label className="block text-sm font-semibold text-white/90 mb-2">
                 Nueva Ubicación:
               </label>
               <input
                 value={newLocation}
                 onChange={(e) => setNewLocation(e.target.value)}
                 placeholder="Ej: A-01-B-03"
-                className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-neutral-900 placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-300 transition-all duration-200"
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500/50 transition-all duration-200"
                 autoCapitalize="characters"
                 autoCorrect="false"
                 autoFocus
@@ -774,7 +774,7 @@ function CatalogoAlmacenPremiumInner() {
                   setShowEditModal(false);
                   setNewLocation("");
                 }}
-                className="flex-1 px-4 py-3 bg-neutral-100 text-neutral-700 rounded-xl font-semibold hover:bg-neutral-200 transition-colors duration-200"
+                className="flex-1 px-4 py-3 bg-white/10 text-white/90 rounded-xl font-semibold hover:bg-white/20 transition-colors duration-200 border border-white/10"
                 disabled={isUpdatingLocation}
               >
                 Cancelar
@@ -782,7 +782,7 @@ function CatalogoAlmacenPremiumInner() {
 
               <button
                 onClick={() => actualizarLocalizacion(newLocation)}
-                className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-3 bg-gradient-to-br from-blue-900 to-purple-900 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 disabled={isUpdatingLocation || !newLocation.trim()}
               >
                 {isUpdatingLocation ? (

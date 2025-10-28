@@ -3,8 +3,9 @@
 import { useState, useCallback, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { useCompany } from "@/lib/company-context"
-import { Package, Calendar, Box, ArrowLeft, Search, ArrowUpDown, RefreshCw } from "lucide-react"
+import { Package, Calendar, Box, Search, ArrowUpDown, RefreshCw } from "lucide-react"
 import { fetchJsonWithRetry } from "@/lib/fetch-with-retry"
+import DashboardLayout from "@/components/layouts/dashboard-layout"
 
 type OrdenPacking = {
   key: string
@@ -113,20 +114,14 @@ export default function OrdenesPacking() {
   }, [ordenes, search, sortAsc])
 
   return (
-    <div className="min-h-screen bg-black">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-xl border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => router.push("/dashboard")}
-              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5 text-white/90" />
-            </button>
-            <h1 className="text-2xl font-bold text-white/90">Órdenes de Packing</h1>
-            <div className="w-9" /> {/* Spacer for centering */}
-          </div>
+    <DashboardLayout activeSection="PROCESOS" showHeader={false}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-950 via-black to-gray-900">
+        {/* Header */}
+        <div className="sticky top-0 z-10 bg-black/80 backdrop-blur-xl border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-6 py-6">
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-white/90">Órdenes de Packing</h1>
+            </div>
 
           {/* Search and Controls */}
           <div className="flex gap-3 items-center">
@@ -222,7 +217,8 @@ export default function OrdenesPacking() {
             ))}
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   )
 }
