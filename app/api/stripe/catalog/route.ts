@@ -14,12 +14,12 @@ function required(name: string) {
   return v;
 }
 
-let stripe: Stripe;
-try {
-  stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"));
-} catch (e: any) {
-  // No arrojamos aquí para que GET pueda devolver 500 con mensaje claro
-  console.error("[/api/stripe/catalog] init error:", e?.message);
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+  }
+  return stripeInstance;
 }
 
 /* =========================
@@ -116,8 +116,7 @@ const REQUIRED_PRODUCT_KEY = "krkn_plan_unico";
 
 export async function GET(req: NextRequest) {
   try {
-    if (!stripe)
-      throw new Error("Stripe no inicializado (falta STRIPE_SECRET_KEY_BS)");
+    const stripe = getStripe();
 
     const url = new URL(req.url);
     const tenant = (url.searchParams.get("tenant") || "").toLowerCase().trim();
@@ -132,7 +131,7 @@ export async function GET(req: NextRequest) {
     // Buscar SOLO el producto activo con ese product_key
     const prods = await withRetry(
       () =>
-        stripe!.products.search({
+        stripe.products.search({
           query: `active:'true' AND metadata['product_key']:'${productKey}'`,
           limit: 1,
         }),
@@ -153,7 +152,7 @@ export async function GET(req: NextRequest) {
     // Listar precios del producto (con retry), filtrar por currency y visibilidad
     const prices = await withRetry(
       () =>
-        stripe!.prices.list({
+        stripe.prices.list({
           product: p.id,
           active: true,
           limit: 100,

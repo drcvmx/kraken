@@ -9,7 +9,14 @@ function required(name: string) {
   if (!v) throw new Error(`Missing env ${name}`);
   return v;
 }
-const stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+  }
+  return stripeInstance;
+}
 
 type Props = { searchParams: { price?: string } };
 
@@ -20,6 +27,7 @@ export default async function Cancel({ searchParams }: Props) {
 
   if (priceId) {
     try {
+      const stripe = getStripe();
       price = await stripe.prices.retrieve(priceId);
       const prodId =
         typeof price.product === "string"
