@@ -10,12 +10,19 @@ function required(name: string) {
   return v;
 }
 
-const stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"), {
-  apiVersion: "2025-09-30.clover",
-});
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"), {
+      apiVersion: "2025-09-30.clover",
+    });
+  }
+  return stripeInstance;
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const stripe = getStripe();
     const { email, priceId, tenant, successUrl, cancelUrl, userId } =
       await req.json();
 

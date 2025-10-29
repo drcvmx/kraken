@@ -10,7 +10,14 @@ function required(name: string) {
     if (!v) throw new Error(`Missing env ${name}`);
     return v;
 }
-const stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"), { apiVersion: "2025-09-30.clover" });
+
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+    if (!stripeInstance) {
+        stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"), { apiVersion: "2025-09-30.clover" });
+    }
+    return stripeInstance;
+}
 
 const fbConfig: fb.Options = {
     host: "localhost",
@@ -44,6 +51,7 @@ async function tableExists(db: fb.Database, name: string): Promise<boolean> {
 
 export async function POST(req: NextRequest) {
     try {
+        const stripe = getStripe();
         const { tenant } = await req.json();
         if (!tenant) return NextResponse.json({ error: "Falta tenant" }, { status: 400 });
 

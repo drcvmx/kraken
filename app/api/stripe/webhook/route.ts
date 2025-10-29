@@ -15,9 +15,17 @@ function required(name: string) {
   return v;
 }
 
-// Usa la versión por defecto de tu cuenta (evita apiVersion inventadas)
-const stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"));
-const webhookSecret = required("STRIPE_WEBHOOK_SECRET_BS");
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+  }
+  return stripeInstance;
+}
+
+function getWebhookSecret() {
+  return required("STRIPE_WEBHOOK_SECRET_BS");
+}
 
 /* ========= Firebird config ========= */
 const fbConfig: fb.Options = {
@@ -228,6 +236,8 @@ export async function POST(req: NextRequest) {
 
   // 1) Verifica firma con raw body
   try {
+    const stripe = getStripe();
+    const webhookSecret = getWebhookSecret();
     const sig = req.headers.get("stripe-signature");
     if (!sig) {
       return NextResponse.json(

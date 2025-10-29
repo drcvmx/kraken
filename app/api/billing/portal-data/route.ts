@@ -12,8 +12,14 @@ function required(name: string) {
     if (!v) throw new Error(`Missing env ${name}`);
     return v;
 }
-// Deja que Stripe use la versión de tu cuenta.
-const stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+    if (!stripeInstance) {
+        stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+    }
+    return stripeInstance;
+}
 
 /* ========= Firebird ========= */
 const fbConfig: fb.Options = {
@@ -55,6 +61,7 @@ async function tableExists(db: fb.Database, name: string): Promise<boolean> {
 
 export async function GET(req: NextRequest) {
     try {
+        const stripe = getStripe();
         const url = new URL(req.url);
         const tenant = (url.searchParams.get("tenant") || "").trim().toLowerCase();
         if (!tenant) {

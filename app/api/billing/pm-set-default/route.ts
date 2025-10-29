@@ -12,7 +12,15 @@ function required(name: string) {
     if (!v) throw new Error(`Missing env ${name}`);
     return v;
 }
-const stripe = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+
+// Lazy initialization to avoid build-time errors
+let stripeInstance: Stripe | null = null;
+function getStripe() {
+    if (!stripeInstance) {
+        stripeInstance = new Stripe(required("STRIPE_SECRET_KEY_BS"));
+    }
+    return stripeInstance;
+}
 
 /* ========= Firebird ========= */
 const fbConfig: fb.Options = {
@@ -90,6 +98,7 @@ async function getCustomerIdAndSubscription(tenant: string): Promise<{ customerI
 
 export async function POST(req: NextRequest) {
     try {
+        const stripe = getStripe();
         const { tenant, payment_method_id } = await req.json();
         const t = String(tenant || "").trim().toLowerCase();
         const pmId = String(payment_method_id || "").trim();
